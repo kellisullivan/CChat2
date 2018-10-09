@@ -53,10 +53,7 @@ public class CentralServer extends Server {
 
 	@Override
 	public void write(Socket writeSock, String message) throws IOException {
-		byte[] rbuf = new byte[30];
-		for (int i = 0; i < message.length(); i++) {
-			rbuf[i] = (byte) (int) message.charAt(i);
-		}
+		byte[] rbuf = message.getBytes("US-ASCII");
 		writeSock.getOutputStream().write(rbuf, 0, rbuf.length);
 	}
 

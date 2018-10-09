@@ -16,13 +16,10 @@ public abstract class Server {
        
         // Make the server socket with a maximum queue of 20 connections
 		srvSock = new ServerSocket(port, 20, serverAddress);
-		System.err.println("opened");
 		
         // Read and handle connections forever
         while(true) {
-        	System.err.println("1");
 			Socket listeningSock = srvSock.accept();
-			System.err.println("accepted");
 			String message = read(listeningSock);
 			write(listeningSock, message);
 			
