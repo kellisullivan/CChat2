@@ -18,7 +18,7 @@ public class ChatServer extends Server {
 	}
 
 	@Override
-	public void read(Socket readSock) throws UnsupportedEncodingException, IOException {
+	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
 		// Wait for client's request and then write the request to server socket (send to server)
 		while ((bytesRead = readSock.getInputStream().read(rbuf)) > 0) {                                                                                                                               
 			request = new String(rbuf, "US-ASCII");
@@ -27,7 +27,7 @@ public class ChatServer extends Server {
 	}
 
 	@Override
-	public void write(Socket writeSock) throws IOException {
+	public void write(Socket writeSock, String message) throws IOException {
 		writeSock.getOutputStream().write(rbuf, 0, bytesRead);
 	}
 

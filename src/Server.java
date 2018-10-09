@@ -16,13 +16,14 @@ public abstract class Server {
        
         // Make the server socket with a maximum queue of 20 connections
 		srvSock = new ServerSocket(port, 20, serverAddress);
+		System.err.println("opened");
 		
         // Read and handle connections forever
         while(true) {
 			Socket listeningSock = srvSock.accept();
-			
-			read(listeningSock);
-			write(listeningSock);
+			System.err.println("accepted");
+			String message = read(listeningSock);
+			write(listeningSock, message);
 			
 			// Close socket after responding
             listeningSock.close();
@@ -30,9 +31,9 @@ public abstract class Server {
 	}
 	
 	// Read message from socket and parse
-	public abstract void read(Socket readSock) throws UnsupportedEncodingException, IOException;
+	public abstract String read(Socket readSock) throws UnsupportedEncodingException, IOException;
 	
 	// Compile message and write to socket
-	public abstract void write(Socket writeSock) throws IOException;
+	public abstract void write(Socket writeSock, String message) throws IOException;
 	
 }
