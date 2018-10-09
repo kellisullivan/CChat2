@@ -25,6 +25,9 @@ public abstract class Server {
 			System.err.println("accepted");
 			String message = read(listeningSock);
 			write(listeningSock, message);
+			
+			// Close socket after responding
+	        listeningSock.close();
         }	
 	}
 	

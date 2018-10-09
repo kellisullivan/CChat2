@@ -1,6 +1,9 @@
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.util.Scanner;
+
 
 public class CentralServer extends Server {
 	
@@ -13,35 +16,38 @@ public class CentralServer extends Server {
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
-		byte[] rbuf = new byte[30];
+		String message = null;
+		String prefix;
+		String username;
+		String groupname;
+		String password;
 		counter = 0;
-		isEndOfLine = false;
-		// Wait for client's request and then write the request to server socket (send to server)
-		while ((bytesRead = readSock.getInputStream().read(rbuf)) > 0 && isEndOfLine == false) {     
-			if (rbuf[counter] == '\n') {
-				isEndOfLine = true;
-			}
-			counter++;
-        }
-		String message = new String(rbuf, "US-ASCII");
-    	String[] tokens = message.split("\\s+");
-    	if (tokens.length != 4) {
-    		message = "DENY\n";
+		InputStream stream = readSock.getInputStream();
+		Scanner scan = new Scanner(stream, "US-ASCII");
+		while (scan.hasNextLine()) {
+			message = scan.nextLine();
+			System.err.println("read " + message);
+			String[] tokens = message.split("\\s+");
+			
+	    	if (tokens.length != 4) {
+	    		message = "DENY\n";
+	    	}
+	    	else {
+	    		prefix = tokens[0];
+	    		username = tokens[1];
+	        	groupname = tokens[2];
+	        	password = tokens[3];
+	            if (prefix.equals("INIT")) {
+	            	String gsIPAddress = "ip address";
+	            	int gsPort = 0;
+	            	message = "ACPT " + gsIPAddress + " " + gsPort + " \n";
+	    		}
+	            else {
+	            	message = "DENY\n";
+	            }
+	    	}
     	}
-    	else {
-    		String prefix = tokens[0];
-        	String username = tokens[1];
-        	String groupname = tokens[2];
-        	String password = tokens[3];
-            if (prefix.equals("INIT")) {
-            	String gsIPAddress = "";
-            	int gsPort = 0;
-            	message = "ACPT " + gsIPAddress + " " + gsPort + " \n";
-    		}
-            else {
-            	message = "DENY\n";
-            }
-    	}
+		System.err.println("mess " + message);
         return message;
 	}
 
@@ -52,13 +58,10 @@ public class CentralServer extends Server {
 			rbuf[i] = (byte) (int) message.charAt(i);
 		}
 		writeSock.getOutputStream().write(rbuf, 0, rbuf.length);
-		// Close socket after responding
-        writeSock.close();
 	}
 
 	public static void main(String[] args) throws IOException {
 		CentralServer centralServer = new CentralServer();
-		//IP address and port: 127.0.0.1, 8080
 		String ipAddress = args[0];
 		int port = Integer.parseInt(args[1]);
 		centralServer.listenConnect(ipAddress, port);
