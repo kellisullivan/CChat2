@@ -20,13 +20,11 @@ public abstract class Server {
 		
         // Read and handle connections forever
         while(true) {
+        	System.err.println("1");
 			Socket listeningSock = srvSock.accept();
 			System.err.println("accepted");
 			String message = read(listeningSock);
 			write(listeningSock, message);
-			
-			// Close socket after responding
-            listeningSock.close();
         }	
 	}
 	

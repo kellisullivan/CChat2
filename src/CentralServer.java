@@ -52,6 +52,8 @@ public class CentralServer extends Server {
 			rbuf[i] = (byte) (int) message.charAt(i);
 		}
 		writeSock.getOutputStream().write(rbuf, 0, rbuf.length);
+		// Close socket after responding
+        writeSock.close();
 	}
 
 	public static void main(String[] args) throws IOException {
