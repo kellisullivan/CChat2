@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,7 +21,8 @@ public abstract class Server {
         while(true) {
 			Socket listeningSock = srvSock.accept();
 			
-			//Read and respond somewhere in here
+			read(listeningSock);
+			write(listeningSock);
 			
 			// Close socket after responding
             listeningSock.close();
@@ -28,9 +30,9 @@ public abstract class Server {
 	}
 	
 	// Read message from socket and parse
-	public abstract void read();
+	public abstract void read(Socket readSock) throws UnsupportedEncodingException, IOException;
 	
 	// Compile message and write to socket
-	public abstract void write();
+	public abstract void write(Socket writeSock) throws IOException;
 	
 }
