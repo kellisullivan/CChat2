@@ -21,8 +21,8 @@ public abstract class Server {
         while(true) {
 			Socket listeningSock = srvSock.accept();
 			
-			read(listeningSock);
-			write(listeningSock);
+			String message = read(listeningSock);
+			write(listeningSock, message);
 			
 			// Close socket after responding
             listeningSock.close();
@@ -30,9 +30,9 @@ public abstract class Server {
 	}
 	
 	// Read message from socket and parse
-	public abstract void read(Socket readSock) throws UnsupportedEncodingException, IOException;
+	public abstract String read(Socket readSock) throws UnsupportedEncodingException, IOException;
 	
 	// Compile message and write to socket
-	public abstract void write(Socket writeSock) throws IOException;
+	public abstract void write(Socket writeSock, String message) throws IOException;
 	
 }
