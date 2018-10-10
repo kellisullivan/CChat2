@@ -1,7 +1,8 @@
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Set;
 
 public class GroupRouter extends Server {
 	
@@ -14,12 +15,12 @@ public class GroupRouter extends Server {
 	int numberClients;
 	String ACPT="ACPT";
 	String LEFT= "LEFT";
+	
 	public GroupRouter() {
-		rbuf = new byte[300];
 	}
 
 	@Override
-	public void read(Socket readSock) throws UnsupportedEncodingException, IOException {
+	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
 		// Wait for client's request and then write the request to server socket (send to server)
 		int rbufCounter=0;
 		boolean isNotEndofLine=true;
@@ -45,10 +46,11 @@ public class GroupRouter extends Server {
 		if(prefix.equals(LEFT)) {
 			numberClients--;
 		}
+		return csAddress;
 	}
 
 	@Override
-	public void write(Socket writeSock) throws IOException {	
+	public void write(Socket writeSock, String message) throws IOException {	
 		Set<String> chatIPs;	
 		chatIPs=chatServers.keySet();
 		int min=0;
