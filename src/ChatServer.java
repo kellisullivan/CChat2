@@ -5,12 +5,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.*;
-
 
 public class ChatServer extends Server {
-
+	
 	private byte[] rbuf;
 	private int bytesRead;
 	private String[] partsOfMessage;
@@ -69,11 +66,6 @@ public class ChatServer extends Server {
 //		}
 //		
 //	}
-	
-	
-	
-	
-	
 	
 	// Make a new connection to a server
 	private void connectToGroupRouter() {

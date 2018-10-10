@@ -1,34 +1,67 @@
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.util.Scanner;
+
 
 public class CentralServer extends Server {
 	
-	private byte[] rbuf;
 	int bytesRead;
-	String request;
+	int counter;
+	Boolean isEndOfLine;
 	
 	public CentralServer() {
-		rbuf = new byte[30];
 	}
 
 	@Override
-	public void read(Socket readSock) throws UnsupportedEncodingException, IOException {
-		// Wait for client's request and then write the request to server socket (send to server)
-		while ((bytesRead = readSock.getInputStream().read(rbuf)) > 0) {                                                                                                                               
-            request = new String(rbuf, "US-ASCII");
-            
-		}
-		
+	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
+		String message = null;
+		String prefix;
+		String username;
+		String groupname;
+		String password;
+		counter = 0;
+		InputStream stream = readSock.getInputStream();
+		Scanner scan = new Scanner(stream, "US-ASCII");
+		while (scan.hasNextLine()) {
+			message = scan.nextLine();
+			System.err.println("read " + message);
+			String[] tokens = message.split("\\s+");
+			
+	    	if (tokens.length != 4) {
+	    		message = "DENY\n";
+	    	}
+	    	else {
+	    		prefix = tokens[0];
+	    		username = tokens[1];
+	        	groupname = tokens[2];
+	        	password = tokens[3];
+	            if (prefix.equals("INIT")) {
+	            	String gsIPAddress = "ip address";
+	            	int gsPort = 0;
+	            	message = "ACPT " + gsIPAddress + " " + gsPort + " \n";
+	    		}
+	            else {
+	            	message = "DENY\n";
+	            }
+	    	}
+    	}
+		System.err.println("mess " + message);
+        return message;
 	}
 
 	@Override
-	public void write(Socket writeSock) throws IOException {
-		writeSock.getOutputStream().write(rbuf, 0, bytesRead);
+	public void write(Socket writeSock, String message) throws IOException {
+		byte[] rbuf = message.getBytes("US-ASCII");
+		writeSock.getOutputStream().write(rbuf, 0, rbuf.length);
 	}
 
-	public static void main() {
-		
+	public static void main(String[] args) throws IOException {
+		CentralServer centralServer = new CentralServer();
+		String ipAddress = args[0];
+		int port = Integer.parseInt(args[1]);
+		centralServer.listenConnect(ipAddress, port);
 	}
 
 }
