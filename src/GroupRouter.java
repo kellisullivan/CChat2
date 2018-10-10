@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.*;
 
 public class GroupRouter extends Server {
 
@@ -20,12 +21,17 @@ public class GroupRouter extends Server {
 	String FWRD="FWRD";
 	String IDNT="IDNT";
 	String DENY= "DENY";
+	String NULL="NULL \n";
+	private ArrayList<Socket> sockArray=new ArrayList<Socket>();
 	
 	public GroupRouter() {
 	}
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
+		if(!sockArray.contains(readSock)) {
+			sockArray.add(readSock);
+		}
 		// Wait for client's request and then write the request to server socket (send to server)
 		String csAddress;
 		int csPort;
@@ -43,7 +49,7 @@ public class GroupRouter extends Server {
 				keyArray[0]=csPort;
 				keyArray[1]=numberClients;
 				chatServers.put(csAddress, keyArray);
-				return null;
+				return NULL;
 			}
 			if(prefix.equals(IDNT)) {
 				Set<String> chatIPs;	
@@ -70,13 +76,18 @@ public class GroupRouter extends Server {
 			}
 			if(prefix.equals(LEFT)) {
 				numberClients--;
-				return null;
+				return NULL;
 			}
 			if(prefix.equals(FWRD)) {
-				return message;
+				for(Socket sock:sockArray){
+					this.write(sock, message);
+				}
 			}
+			if(prefix.equals(NULL)) {
+				return NULL;
 			}
-		return null;
+		}
+		return NULL;
 	}
 		@Override
 		public void write(Socket writeSock, String message) throws IOException {
