@@ -1,17 +1,17 @@
 
-public class GroupRouterInfo {
+public class GroupRouterID {
 	
 	private String ipAddress;
 	private int port;
 	private String password;
 
-	public GroupRouterInfo(String ipAddress, int port, String password) {
+	public GroupRouterID(String ipAddress, int port, String password) {
 		this.ipAddress = ipAddress;
 		this.port = port;
 		this.password = password;
 	}
 
-	public String getIpAddress() {
+	public String getIPAddress() {
 		return ipAddress;
 	}
 

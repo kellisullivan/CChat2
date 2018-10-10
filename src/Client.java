@@ -37,7 +37,7 @@ public class Client {
 			return;
 	    }
 	    
-		String send = initialize + username + " " + groupname + " " + password + " \n";
+		String send = initialize + groupname + " " + password + " \n";
 		sock.getOutputStream().write(send.getBytes("US-ASCII"),0,send.length());
 	}
 
