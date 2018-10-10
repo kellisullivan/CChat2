@@ -16,7 +16,7 @@ public class ChatServer extends Server {
 	private InetAddress groupRouterAddress;
 	private InetSocketAddress endpoint;
 	private String localIP;
-	private String groupRouterIP = "127.0.0.1";
+	private String groupRouterIP = "172.16.145.249";
 	private String left = "LEFT ";
 	private ArrayList<Socket> clientSockets = new ArrayList<Socket>();
 	private static final String PING = "PING \n";
@@ -118,14 +118,13 @@ public class ChatServer extends Server {
 
 	@Override
 	public void write(Socket writeSock, String message) throws IOException {
-		if(!message.equals(null)) {
-			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
-		}
+		writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
 	}
 
-	public static void main() {
+	public static void main(String[] args) {
 		ChatServer chatserver = new ChatServer();
 		chatserver.connectToGroupRouter();
+
 		
 	}
 }
