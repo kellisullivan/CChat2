@@ -95,24 +95,35 @@ public class Welcome extends Thread{
 		btnContinue.setBounds(294, 378, 139, 54);
 		frame.getContentPane().add(btnContinue);
 		btnContinue.addActionListener(new ActionListener() {
+			private WrongInfo usernameError;
+			private WrongInfo groupnameError;
+			private WrongInfo passwordError;
+
 			public void actionPerformed(ActionEvent e) {
 				if (usernameInput.getText().isEmpty()) {
-					System.err.println("No username was inputed");
-					System.exit(0);
+					System.out.println("made it");
+					frame.dispose();
+					System.out.println("made it here");
+					usernameError = new WrongInfo("No username was inputed");
+					//System.exit(0);
 				}
-				if (groupnameInput.getText().isEmpty()) {
-					System.err.println("No group name was inputed");
-					System.exit(0);
+				else if (groupnameInput.getText().isEmpty()) {
+					frame.dispose();
+					groupnameError = new WrongInfo("No group name was inputed");
+					//System.exit(0);
 				}
-				if (passwordInput.getText().isEmpty()) {
-					System.err.println("No password was inputed");
-					System.exit(0);
+				else if (passwordInput.getText().isEmpty()) {
+					frame.dispose();
+					passwordError = new WrongInfo("No password was inputed");
+					//System.exit(0);
 				}
-				info[0] = usernameInput.getText();
-				info[1] = groupnameInput.getText();
-				info[2] = passwordInput.getText();
-				unlock.unlock();
-				frame.dispose();
+				else {
+					info[0] = usernameInput.getText();
+					info[1] = groupnameInput.getText();
+					info[2] = passwordInput.getText();
+					unlock.unlock();
+					frame.dispose();
+				}
 			}
 		});
 	}
