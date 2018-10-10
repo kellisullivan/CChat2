@@ -5,19 +5,22 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ChatServer extends Server {
 	
 	private String[] tokens;
 	private String username;
-	private String groupRouterIP = "127.0.0.1";
-	private String left = "LEFT ";
 	private Socket groupRouterSock;
 	private InetAddress groupRouterAddress;
 	private InetSocketAddress endpoint;
 	private String localIP;
+	private String groupRouterIP = "127.0.0.1";
+	private String left = "LEFT ";
+	private ArrayList<Socket> clientSockets = new ArrayList<Socket>();
 	private static final String PING = "PING \n";
+	private static final String NULL = "NULL \n";
 
 	public ChatServer() {
 
@@ -41,12 +44,12 @@ public class ChatServer extends Server {
 				System.exit(1);
 				return;
 			}
-
+			
 			//Send group router the PING message as soon as it connects
-			groupRouterSock.getOutputStream().write(PING.getBytes("US-ASCII"),0,PING.length());
+			this.write(groupRouterSock, PING);
+			this.read(groupRouterSock);
 			ChatServerProcesses toGroupRouter = new ChatServerProcesses(this, groupRouterSock);
 			toGroupRouter.start();
-
 		}
 		catch(Exception e) {
 			System.err.println("Cannot connect to server.");
@@ -58,6 +61,11 @@ public class ChatServer extends Server {
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
+		//Grab and store Client's sockets
+		if(!clientSockets.contains(readSock)) {
+			clientSockets.add(readSock);
+		}
+		
 		//Check if Client has disconnected
 		if (!readSock.isConnected()) {
 	    	  left += localIP + " \n";
@@ -77,7 +85,10 @@ public class ChatServer extends Server {
     		
             if (prefix.equals("FWRD")) {
             	System.err.println("Message to forward to Clients");
-    			return message;
+            	for(Socket clientSocket: clientSockets) {
+            		this.write(clientSocket, message);
+            	}
+    			return NULL;
     		}
             else if (prefix.equals("TEXT")) {
     			System.err.println("Client sent this message, must be forwarded.");
@@ -88,12 +99,21 @@ public class ChatServer extends Server {
     				message+= tokens[i]+" ";
     			}
     			message+= "\n";
+    			
     			return message;
     		}
-            System.err.println("Chat server recieved a message it shouldn't have: " + message);
-            return null;
+            else if (prefix.equals("NULL")) {
+    			System.err.println("Group Router recieved a PING or LEFT message.");
+    			return NULL;
+    		}
+            else{
+            	System.err.println("Chat server recieved a message it shouldn't have: " + message);
+            	System.exit(1);
+            }
+            
     	}
-		return null;
+		return NULL;
+		
 	}
 
 	@Override
