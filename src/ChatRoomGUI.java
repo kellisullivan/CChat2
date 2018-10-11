@@ -62,6 +62,7 @@ public class ChatRoomGUI {
 				public void actionPerformed(ActionEvent e) {
 					String statement = textField.getText();
 					message = statement;
+					System.err.print("message: " + message);
 					textField.setText("");
 				}
 			});
@@ -70,6 +71,10 @@ public class ChatRoomGUI {
 		
 	}
 		
+	
+	public void editMessage() {
+		message = null;
+	}
 	public String getMessage() {
 		return message;
 	}

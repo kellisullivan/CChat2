@@ -29,7 +29,7 @@ public class GroupRouter extends Server {
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
-		System.err.println("Reading");
+		//System.err.println("Reading");
 		if(!sockArray.contains(readSock)) {
 			sockArray.add(readSock);
 		}
@@ -46,9 +46,10 @@ public class GroupRouter extends Server {
 			System.err.println("prefix is: " + prefix);
 			if(prefix.equals(PING)) {
 				csAddress=readSock.getInetAddress().getHostAddress().toString();
-				csPort=readSock.getPort();
+				//csPort=readSock.getPort();
+				String[] tokens = message.split("\\s+");
 				numberClients=0;
-				keyArray[0]=csPort;
+				keyArray[0]= Integer.parseInt(tokens[1]);
 				keyArray[1]=numberClients;
 				chatServers.put(csAddress, keyArray);
 				System.err.println("Message is NULL");
@@ -96,18 +97,20 @@ public class GroupRouter extends Server {
 				return NULL;
 			}
 		}
-		System.err.println("Incorrect message recieved, message is NULL");
+		//System.err.println("Incorrect message recieved, message is NULL");
 		return NULL;
 	}
 		@Override
 		public void write(Socket writeSock, String message) throws IOException {
-			System.err.println("Writing message: " + message);
+			if (!message.equals(NULL)) {
+				System.err.println("Writing message: " + message);
+			}
 			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());		
 		}
 
 		public static void main(String[] args) throws IOException {
 			GroupRouter gr=new GroupRouter();
-			gr.listenConnect("127.0.0.1", 2020);
+			gr.listenConnect("127.0.0.1", 4065);
 		}
 
 	}

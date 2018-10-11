@@ -57,14 +57,14 @@ public class Client {
 			System.err.println("read " + message);
 			tokens = message.split("\\s+");
 	    }
-		if (tokens[0] == "ACPT") {
+		if (tokens[0].equals("ACPT")) {
 			String ipAddress = tokens[1];
 			int port = Integer.parseInt(tokens[2]);
 			groupRouterSocket(ipAddress, port);
 			System.err.println(ipAddress);
 			System.err.println(port);
 		}
-		else if (tokens[0] == "DENY") {
+		else if (tokens[0].equals("DENY")) {
 			WrongInfo error = new WrongInfo("Group name  or Password was incorrect.");
 		}
 		else {
@@ -78,7 +78,7 @@ public class Client {
 	public static void groupRouterSocket(String ipAddress, int port) throws IOException {
 		
 		chatroom = new ChatRoomGUI(groupname);
-		
+		System.err.println("read4");
 		Socket sock;
 	    InetAddress server_address;
 	    InetSocketAddress endpoint;
@@ -88,48 +88,54 @@ public class Client {
 	    server_address = InetAddress.getByName(ipAddress);
 	    endpoint = new InetSocketAddress(server_address, port);
 	    sock = new Socket();
+	    System.err.println("read");
 	
 
 	    // Make the connection
 	    try {
+	    	System.err.println("read2");
 	    	sock.connect(endpoint);
 	    } catch(ConnectException e) {
 	        System.err.println("Cannot connect to server.");
 	        System.exit(1);
 			return;
 	    }
-	    
+	    System.err.println("read1");
 		sock.getOutputStream().write(identification.getBytes("US-ASCII"),0,identification.length());
 		
 		
 		String[] tokens = null;		
 		String message = null;
-		
 		InputStream stream = sock.getInputStream();
 		Scanner scan = new Scanner(stream, "US-ASCII");
 		while (scan.hasNextLine()) {
 			message = scan.nextLine();
 			System.err.println("read " + message);
 			tokens = message.split("\\s+");
+			if (tokens[0].equals("ACPT")) {
+				System.err.println("enter");
+				String finalIpAddress = tokens[1];
+				int finalPort = Integer.parseInt(tokens[2]);
+				chatServerSock(finalIpAddress, finalPort);
+			}
+			else if (tokens[0].equals("DENY")) {
+				System.err.println("enter2");
+				WrongInfo error = new WrongInfo("Cannot connect you to the chat room.");
+			}
+			else {
+				System.err.println("enter3");
+				System.exit(1);
+			}	
+			
+			sock.close();
 	    }
-		if (tokens[0] == "ACPT") {
-			String finalIpAddress = tokens[1];
-			int finalPort = Integer.parseInt(tokens[2]);
-			chatServerSock(finalIpAddress, finalPort);
-		}
-		else if (tokens[0] == "DENY") {
-			WrongInfo error = new WrongInfo("Cannot connect you to the chat room.");
-		}
-		else {
-			System.exit(1);
-		}	
 		
-		sock.close();
 
 	    
 	}
 	
 	public static void chatServerSock(String ipAddress, int port) throws IOException {
+		System.err.println("CS");
 		Socket sock;
 	    InetAddress server_address;
 	    InetSocketAddress endpoint;
@@ -139,7 +145,7 @@ public class Client {
 	    server_address = InetAddress.getByName(ipAddress);
 	    endpoint = new InetSocketAddress(server_address, port);
 	    sock = new Socket();
-	
+	    System.err.println("CS1");
 
 	    // Make the connection
 	    try {
@@ -149,9 +155,11 @@ public class Client {
 	        System.exit(1);
 			return;
 	    }		
-	    
+	    System.err.println("CS2");
 	    ReadClient read = new ReadClient(chatroom, sock);
+	    System.err.println("CS3");
 	    WriteClient write = new WriteClient(chatroom, sock, username);
+	    System.err.println("CS4");
 	    read.start();
 	    write.start();
 	    

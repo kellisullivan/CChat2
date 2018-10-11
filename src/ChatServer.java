@@ -19,7 +19,7 @@ public class ChatServer extends Server {
 	private String groupRouterIP = "127.0.0.1";
 	private String left = "LEFT ";
 	private ArrayList<Socket> clientSockets = new ArrayList<Socket>();
-	private static final String PING = "PING \n";
+	private static final String PING = "PING 7000 \n";
 	private static final String NULL = "NULL \n";
 
 	public ChatServer() {
@@ -31,7 +31,7 @@ public class ChatServer extends Server {
 		try{
 			// Setup the server side connection data to Group Router
 			groupRouterAddress = InetAddress.getByName(groupRouterIP);
-			endpoint = new InetSocketAddress(groupRouterAddress, 2020);
+			endpoint = new InetSocketAddress(groupRouterAddress, 4065);
 
 			//Make a TCP connection 
 			groupRouterSock = new Socket();
@@ -62,13 +62,14 @@ public class ChatServer extends Server {
 			System.exit(1);
 			return;
 		}
-
 	}
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
 		//Grab and store Client's sockets
-		if(!clientSockets.contains(readSock)) {
+		System.err.println(readSock);
+		System.err.println(groupRouterSock);
+		if((!clientSockets.contains(readSock)) && (readSock.getPort() != (groupRouterSock.getPort()))) {
 			clientSockets.add(readSock);
 		}
 		
@@ -105,8 +106,8 @@ public class ChatServer extends Server {
     				message+= tokens[i]+" ";
     			}
     			message+= "\n";
-    			
-    			return message;
+    			this.write(groupRouterSock, message);
+    			return NULL;
     		}
             else if (prefix.equals("NULL")) {
     			System.err.println("Group Router recieved a PING or LEFT message.");
@@ -124,13 +125,15 @@ public class ChatServer extends Server {
 
 	@Override
 	public void write(Socket writeSock, String message) throws IOException {
-		writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
+		if (!message.substring(0,4).equals("NULL")) {
+			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
+		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ChatServer chatserver = new ChatServer();
 		chatserver.connectToGroupRouter();
-
+		chatserver.listenConnect("127.0.0.1", 7000);
 		
 	}
 }

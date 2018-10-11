@@ -10,9 +10,9 @@ public class WriteClient extends Thread{
 	String text = "TEXT ";
 	
 	public WriteClient(ChatRoomGUI gui, Socket sock, String username) {
-		chatroom = gui;
-		write = sock;
-		username = this.username;
+		this.chatroom = gui;
+		this.write = sock;
+		this.username = username;
 	}
 	
 	public void run() {
@@ -27,13 +27,12 @@ public class WriteClient extends Thread{
 				try {
 					rbuf = finalmessage.getBytes("US-ASCII");
 				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				try {
 					write.getOutputStream().write(rbuf, 0, rbuf.length);
+					chatroom.editMessage();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

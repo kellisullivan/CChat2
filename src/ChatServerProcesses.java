@@ -13,6 +13,7 @@ public class ChatServerProcesses extends Thread{
 		try {
 			while(true){
 				String message = chatServer.read(socket);
+				System.err.println("GR " + message);
 				chatServer.write(socket, message);
 			}
 		} 
