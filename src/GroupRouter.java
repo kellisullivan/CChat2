@@ -98,7 +98,7 @@ public class GroupRouter extends Server {
 
 		public static void main() {
 			GroupRouter gr=new GroupRouter();
-			gr.listenConnect(ipAddress, port);
+			//gr.listenConnect(ipAddress, port);
 		}
 
 	}

@@ -1,7 +1,7 @@
 Anthropology:127.0.0.1:4050:erhsdagsrh
 Art:127.0.0.1:4051:sbersgebfc
 Asian Studies:127.0.0.1:4052:egergj545455
-Chemistry and Biochemistry:127.0.0.1:053lw;g;4lt;a
+Chemistry and Biochemistry:127.0.0.1:4053:wgtasdfavdbggh
 Classics:127.0.0.1:4054:hsrth5th2s2ae4
 Classics-English:127.0.0.1:4055:wtege1351
 Classics-History-Politics:127.0.0.1:4056:etyrh541
