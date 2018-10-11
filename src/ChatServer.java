@@ -1,72 +1,31 @@
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ChatServer extends Server {
 	
-	private byte[] rbuf;
-	private int bytesRead;
-	private String[] partsOfMessage;
+	private String[] tokens;
 	private String username;
-	private String text;
-	private String groupRouterIP = "127.0.0.1";
-	private String left = "LEFT ";
 	private Socket groupRouterSock;
 	private InetAddress groupRouterAddress;
 	private InetSocketAddress endpoint;
-	private ServerSocket chatServerSock;
-	private InetAddress localAddress;
 	private String localIP;
+	private String groupRouterIP = "172.16.145.249";
+	private String left = "LEFT ";
+	private ArrayList<Socket> clientSockets = new ArrayList<Socket>();
 	private static final String PING = "PING \n";
+	private static final String NULL = "NULL \n";
 
 	public ChatServer() {
 
 	}
 
-	
-//	private void listenForClient() {
-//		try {
-//			// Setup the Chat Server side connection data
-//			localAddress = groupRouterSock.getLocalAddress();
-//			localIP = localAddress.getHostAddress();
-//			
-//			// Make the server socket with a maximum queue of 12 connections
-//			chatServerSock = new ServerSocket(2021, 12, localAddress);
-//
-//			
-//			
-//			// Read handle connections forever
-//			while(true) {
-//				// Get the next connection
-//				Socket csSock = chatServerSock.accept();
-//
-//				// Assume read can be done in one bite
-//				byte[] withClient = new byte[300];
-//				csSock.getInputStream().read(withClient);
-//				String helo = new String(withClient, "US-ASCII");
-//
-//			 //If the Client has disconnected, send Group Router the "LEFT" message
-//		      if (!csSock.isConnected()) {
-//		    	  left += localIP + " \n";
-//		    	  csSock.getOutputStream().write(left.getBytes("US-ASCII"),0,left.length());
-//		    	  csSock.close();
-//		    	  chatServerSock.close();
-//		      }
-//			}
-//			
-//		}
-//		catch(Exception e) {
-//			System.err.println("Cannot set up a server.");
-//			System.exit(1);
-//			return;
-//		}
-//		
-//	}
-	
 	// Make a new connection to a server
 	private void connectToGroupRouter() {
 		try{
@@ -85,12 +44,12 @@ public class ChatServer extends Server {
 				System.exit(1);
 				return;
 			}
-
+			
 			//Send group router the PING message as soon as it connects
-			groupRouterSock.getOutputStream().write(PING.getBytes("US-ASCII"),0,PING.length());
+			this.write(groupRouterSock, PING);
+			this.read(groupRouterSock);
 			ChatServerProcesses toGroupRouter = new ChatServerProcesses(this, groupRouterSock);
 			toGroupRouter.start();
-
 		}
 		catch(Exception e) {
 			System.err.println("Cannot connect to server.");
@@ -102,45 +61,59 @@ public class ChatServer extends Server {
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
-		 //Check if Client has disconnected
+		//Grab and store Client's sockets
+		if(!clientSockets.contains(readSock)) {
+			clientSockets.add(readSock);
+		}
+		
+		//Check if Client has disconnected
 		if (!readSock.isConnected()) {
 	    	  left += localIP + " \n";
 	    	  readSock.getOutputStream().write(left.getBytes("US-ASCII"),0,left.length());
 	    	  readSock.close();
 		}
 		// Wait for client's request and then write the request to server socket (send to server)
-		rbuf = new byte[300];
+		InputStream stream = readSock.getInputStream();
+		Scanner scan = new Scanner(stream, "US-ASCII");
 		String message;
-		int rbufCounter = 0;
-		boolean isNotEndOfLine = true;
-		while (((bytesRead = readSock.getInputStream().read(rbuf)) > 0) && isNotEndOfLine) {  
-			if(rbuf[rbufCounter] == '\n') {
-				isNotEndOfLine = false;
-			}
-			rbufCounter++;
-		}
-		message = new String(rbuf, "US-ASCII");
-		if (message.substring(0,3) == "FWRD") {
-			System.out.println("Message to forward to Clients");
-			return message;
-		}
-
-		if (message.substring(0,3) == "TEXT") {
-			System.out.println("Client sent this message, must be forwarded.");
-			partsOfMessage = message.split(" ");
-			username = partsOfMessage[1];
-			message = "FWRD "+username+ " ";
-			for(int i = 2; i < partsOfMessage.length; i++) {
-				message+= partsOfMessage[i]+" ";
-			}
-			message+= "\n";
-			return message;
-		}
-		else {
-			System.out.println("Chat Server received a message it shouldn't have.");
-			return null;
-		}
-
+		String prefix;
+		while (scan.hasNextLine()) {
+			message = scan.nextLine();
+			System.err.println("read " + message);
+			tokens = message.split("\\s+");
+			prefix = tokens[0];
+    		
+            if (prefix.equals("FWRD")) {
+            	System.err.println("Message to forward to Clients");
+            	for(Socket clientSocket: clientSockets) {
+            		this.write(clientSocket, message);
+            	}
+    			return NULL;
+    		}
+            else if (prefix.equals("TEXT")) {
+    			System.err.println("Client sent this message, must be forwarded.");
+    			tokens = message.split(" ");
+    			username = tokens[1];
+    			message = "FWRD "+username+ " ";
+    			for(int i = 2; i < tokens.length; i++) {
+    				message+= tokens[i]+" ";
+    			}
+    			message+= "\n";
+    			
+    			return message;
+    		}
+            else if (prefix.equals("NULL")) {
+    			System.err.println("Group Router recieved a PING or LEFT message.");
+    			return NULL;
+    		}
+            else{
+            	System.err.println("Chat server recieved a message it shouldn't have: " + message);
+            	System.exit(1);
+            }
+            
+    	}
+		return NULL;
+		
 	}
 
 	@Override
@@ -148,9 +121,10 @@ public class ChatServer extends Server {
 		writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
 	}
 
-	public static void main() {
+	public static void main(String[] args) {
 		ChatServer chatserver = new ChatServer();
 		chatserver.connectToGroupRouter();
+
 		
 	}
 }
