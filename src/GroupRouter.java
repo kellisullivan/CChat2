@@ -107,7 +107,7 @@ public class GroupRouter extends Server {
 
 		public static void main(String[] args) throws IOException {
 			GroupRouter gr=new GroupRouter();
-			gr.listenConnect("127.0.0.1", 2020);
+			gr.listenConnect("127.0.0.1", 4065);
 		}
 
 	}

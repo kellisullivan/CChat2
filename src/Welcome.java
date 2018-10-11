@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import sun.misc.Lock;
 
 public class Welcome extends Thread{
 	JFrame frame;
@@ -18,10 +17,10 @@ public class Welcome extends Thread{
 	JTextField passwordInput;
 	String[] info = new String[3];
 	Boolean finished;
-	private Lock unlock;
 
-	public Welcome(Lock lock) throws InterruptedException {
-		unlock = lock;
+
+	public Welcome(boolean isDone) throws InterruptedException {
+		finished = isDone;
 		frame = new JFrame();
 		frame.setSize(800, 600);
 		frame.getContentPane().setBackground(Color.BLACK);
@@ -121,7 +120,7 @@ public class Welcome extends Thread{
 					info[0] = usernameInput.getText();
 					info[1] = groupnameInput.getText();
 					info[2] = passwordInput.getText();
-					unlock.unlock();
+					finished = true;
 					frame.dispose();
 				}
 			}
