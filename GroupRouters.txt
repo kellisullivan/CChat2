@@ -13,7 +13,7 @@ English:127.0.0.1:4061:78te4fd
 Environmental Studies Program:127.0.0.1:4062:we7\f541
 Feminist & Gender Studies:127.0.0.1:4063:7erf4d1v
 Film and Media Studies:127.0.0.1:4064:k4ijuyht5g1f
-French:127.0.0.1:4065:95ewf4g
+French:127.0.0.1:4065:a
 Geology:127.0.0.1:4066:5dsfg4h
 German:127.0.0.1:4067:1vfd45gr7t
 History:127.0.0.1:4068:re74fd1v

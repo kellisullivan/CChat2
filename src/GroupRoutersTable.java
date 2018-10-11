@@ -32,8 +32,11 @@ public class GroupRoutersTable {
 	// check if password entered by client matches that of specified group chat
 	public String authenticateUser(String groupname, String password) {
 		if (GroupRouterMap.containsKey(groupname)) {
+			System.err.println(groupname);
 			GroupRouterID chosenGR = GroupRouterMap.get(groupname);
+			System.err.println(chosenGR);
 			if (password.equals(chosenGR.getPassword())) {
+				System.err.println("yes");
 				return "ACPT " + chosenGR.getIPAddress() + " " + chosenGR.getPort() + " \n";
 			}
 		}

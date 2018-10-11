@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 
+
 public class Welcome extends Thread{
 	JFrame frame;
 	JTextField usernameInput;
