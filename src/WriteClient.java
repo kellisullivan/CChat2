@@ -23,6 +23,7 @@ public class WriteClient extends Thread{
 			}
 			else {
 				String finalmessage = text + username + " " + message + " \n";
+				System.err.println(finalmessage);
 				byte[] rbuf = null;
 				try {
 					rbuf = finalmessage.getBytes("US-ASCII");

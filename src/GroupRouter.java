@@ -11,7 +11,7 @@ public class GroupRouter extends Server {
 
 	private byte[] rbuf;
 	int bytesRead;
-	String message;
+	volatile String message;
 	String prefix=new String();
 	String PING="PING";
 	HashMap<String,Integer[]> chatServers= new HashMap<String, Integer[]>();
@@ -30,9 +30,6 @@ public class GroupRouter extends Server {
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
 		//System.err.println("Reading");
-		if(!sockArray.contains(readSock)) {
-			sockArray.add(readSock);
-		}
 		// Wait for client's request and then write the request to server socket (send to server)
 		String csAddress;
 		int csPort;
@@ -44,6 +41,9 @@ public class GroupRouter extends Server {
 			System.err.println("Message recieved: " + message);
 			prefix=message.substring(0,4);
 			System.err.println("prefix is: " + prefix);
+			if(!sockArray.contains(readSock) && !prefix.equals(IDNT)) {
+				sockArray.add(readSock);
+			}
 			if(prefix.equals(PING)) {
 				csAddress=readSock.getInetAddress().getHostAddress().toString();
 				//csPort=readSock.getPort();
@@ -87,6 +87,7 @@ public class GroupRouter extends Server {
 				return NULL;
 			}
 			if(prefix.equals(FWRD)) {
+				message += " \n";
 				for(Socket sock:sockArray){
 					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);
@@ -105,7 +106,10 @@ public class GroupRouter extends Server {
 			if (!message.equals(NULL)) {
 				System.err.println("Writing message: " + message);
 			}
-			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());		
+			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());	
+			if (!message.equals(NULL)) {
+				System.err.print("just wrote");
+			}
 		}
 
 		public static void main(String[] args) throws IOException {

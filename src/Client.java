@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-import sun.misc.*;
+
 
 
 public class Client {
@@ -172,17 +172,13 @@ public class Client {
 	
 	public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException, IOException {
 		//create a new lock to use to wait for our threads
-		Lock lock = new Lock();
-		
-		//lock the lock before entering the GUI
-		lock.lock();
+		boolean done = false;
 		
 		//create the GUI
-		Welcome welcome = new Welcome(lock);
+		Welcome welcome = new Welcome(done);
 		
-		//wait to get the lock once the GUI has gotten the
-		//information from the user
-		lock.lock();
+		while(welcome.done() == false) {		
+		}
 
 		//get the information from the GUI
 		//store it to be used to send to the Central Server

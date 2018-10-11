@@ -19,7 +19,7 @@ public class ChatRoomGUI {
 	private static JTextField textField;
 	private static String chatroom;
 	private static JFrame frame;
-	private static String message;
+	private volatile static String messageTyped;
 	
 	public ChatRoomGUI(String groupname) {
 		chatroom = groupname;
@@ -61,8 +61,8 @@ public class ChatRoomGUI {
 		btnSend.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String statement = textField.getText();
-					message = statement;
-					System.err.print("message: " + message);
+					messageTyped = statement;
+					System.err.print("message: " + messageTyped);
 					textField.setText("");
 				}
 			});
@@ -73,10 +73,13 @@ public class ChatRoomGUI {
 		
 	
 	public void editMessage() {
-		message = null;
+		messageTyped = null;
 	}
 	public String getMessage() {
-		return message;
+		if (messageTyped != null) {
+			System.err.println("get message " + messageTyped);
+		}
+		return messageTyped;
 	}
 	
 	
