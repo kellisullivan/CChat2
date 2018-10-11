@@ -30,7 +30,7 @@ public class Client {
 	
 	    // Setup the server side connection data
 	    server_address = InetAddress.getByName("127.0.0.1");
-	    endpoint = new InetSocketAddress(server_address, 8080);
+	    endpoint = new InetSocketAddress(server_address, 13306);
 	    sock = new Socket();
 	
 
@@ -43,7 +43,7 @@ public class Client {
 			return;
 	    }
 	    
-		String send = initialize + username + " " + groupname + " " + password + " \n";
+		String send = initialize + groupname + " " + password + " \n";
 		sock.getOutputStream().write(send.getBytes("US-ASCII"),0,send.length());
 		
 		
@@ -61,6 +61,8 @@ public class Client {
 			String ipAddress = tokens[1];
 			int port = Integer.parseInt(tokens[2]);
 			groupRouterSocket(ipAddress, port);
+			System.err.println(ipAddress);
+			System.err.println(port);
 		}
 		else if (tokens[0] == "DENY") {
 			WrongInfo error = new WrongInfo("Group name  or Password was incorrect.");

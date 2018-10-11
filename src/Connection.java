@@ -12,7 +12,7 @@ public class Connection extends Thread {
 	}
 	
 	public void run() {
-		while (sock.isConnected()) {
+		while (!sock.isClosed()) {
 			try {
 				String message = serv.read(sock);
 				serv.write(sock, message);

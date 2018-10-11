@@ -24,7 +24,7 @@ public class CentralServer extends Server {
 		Scanner scan = new Scanner(stream, "US-ASCII");
 		while (scan.hasNextLine()) {
 			message = scan.nextLine();
-			System.err.println("read " + message);
+			System.err.println("read: " + message);
 			String[] tokens = message.split("\\s+");
 			
 	    	if (tokens.length != 3) {
@@ -41,16 +41,16 @@ public class CentralServer extends Server {
 	            	message = "DENY \n";
 	            }
 	    	}
+			System.err.println("wrote: " + message);
+	        return message;
     	}
-		System.err.println("mess " + message);
-        return message;
+		return message;
 	}
 
 	@Override
 	public void write(Socket writeSock, String message) throws IOException {
 		byte[] rbuf = message.getBytes("US-ASCII");
 		writeSock.getOutputStream().write(rbuf, 0, rbuf.length);
-		
 		// Close socket after writing message back to client
 		writeSock.close();
 	}
