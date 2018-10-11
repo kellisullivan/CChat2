@@ -16,12 +16,12 @@ public class GroupRouter extends Server {
 	String PING="PING";
 	HashMap<String,Integer[]> chatServers= new HashMap<String, Integer[]>();
 	int numberClients;
-	String ACPT="ACPT";
+	String ACPT= "ACPT";
 	String LEFT= "LEFT";
-	String FWRD="FWRD";
-	String IDNT="IDNT";
+	String FWRD= "FWRD";
+	String IDNT= "IDNT";
 	String DENY= "DENY";
-	String NULL="NULL \n";
+	String NULL= "NULL \n";
 	private ArrayList<Socket> sockArray=new ArrayList<Socket>();
 	
 	public GroupRouter() {
@@ -29,6 +29,7 @@ public class GroupRouter extends Server {
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
+		System.err.println("Reading");
 		if(!sockArray.contains(readSock)) {
 			sockArray.add(readSock);
 		}
@@ -36,12 +37,13 @@ public class GroupRouter extends Server {
 		String csAddress;
 		int csPort;
 		Integer[] keyArray=new Integer[2];
-
 		InputStream stream = readSock.getInputStream();
 		Scanner scan = new Scanner(stream, "US-ASCII");
 		while (scan.hasNextLine()) {
 			message = scan.nextLine();
-			prefix=message.substring(0,3);
+			System.err.println("Message recieved: " + message);
+			prefix=message.substring(0,4);
+			System.err.println("prefix is: " + prefix);
 			if(prefix.equals(PING)) {
 				csAddress=readSock.getInetAddress().getHostAddress().toString();
 				csPort=readSock.getPort();
@@ -49,7 +51,9 @@ public class GroupRouter extends Server {
 				keyArray[0]=csPort;
 				keyArray[1]=numberClients;
 				chatServers.put(csAddress, keyArray);
+				System.err.println("Message is NULL");
 				return NULL;
+				
 			}
 			if(prefix.equals(IDNT)) {
 				Set<String> chatIPs;	
@@ -66,39 +70,44 @@ public class GroupRouter extends Server {
 						}
 						if(min==10) {
 							String messageTo=new String(DENY + " " + '\n');
+							System.err.println("Message is " + messageTo);
 							return messageTo;
 						}
 					}
 					min++;
 				}
 				String messageTo= new String(ACPT + " " + chatServer[0] + " " + chatServer[1] + " " + '\n');
+				System.err.println("Message is " + messageTo);
 				return messageTo;
 			}
 			if(prefix.equals(LEFT)) {
 				numberClients--;
+				System.err.println("Message is NULL");
 				return NULL;
 			}
 			if(prefix.equals(FWRD)) {
 				for(Socket sock:sockArray){
+					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);
 				}
 			}
 			if(prefix.equals(NULL)) {
+				System.err.println("Message is NULL");
 				return NULL;
 			}
 		}
+		System.err.println("Incorrect message recieved, message is NULL");
 		return NULL;
 	}
 		@Override
 		public void write(Socket writeSock, String message) throws IOException {
-			if(!message.equals(null)) {
-				writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
-			}		
+			System.err.println("Writing message: " + message);
+			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());		
 		}
 
-		public static void main() {
+		public static void main(String[] args) throws IOException {
 			GroupRouter gr=new GroupRouter();
-			//gr.listenConnect(ipAddress, port);
+			gr.listenConnect("127.0.0.1", 2020);
 		}
 
 	}

@@ -16,7 +16,7 @@ public class ChatServer extends Server {
 	private InetAddress groupRouterAddress;
 	private InetSocketAddress endpoint;
 	private String localIP;
-	private String groupRouterIP = "172.16.145.249";
+	private String groupRouterIP = "127.0.0.1";
 	private String left = "LEFT ";
 	private ArrayList<Socket> clientSockets = new ArrayList<Socket>();
 	private static final String PING = "PING \n";
@@ -39,6 +39,7 @@ public class ChatServer extends Server {
 			// Make the connection
 			try {
 				groupRouterSock.connect(endpoint);
+				System.err.println("Connected");
 			} catch(ConnectException e) {
 				System.err.println("Cannot connect to server.");
 				System.exit(1);
@@ -46,10 +47,15 @@ public class ChatServer extends Server {
 			}
 			
 			//Send group router the PING message as soon as it connects
+			System.err.println("About to write PING");
 			this.write(groupRouterSock, PING);
+			System.err.println("PING written");
+			System.err.println("About to read response");
 			this.read(groupRouterSock);
+			System.err.println("About to start new thread");
 			ChatServerProcesses toGroupRouter = new ChatServerProcesses(this, groupRouterSock);
 			toGroupRouter.start();
+			System.err.println("Thread started");
 		}
 		catch(Exception e) {
 			System.err.println("Cannot connect to server.");
@@ -79,7 +85,7 @@ public class ChatServer extends Server {
 		String prefix;
 		while (scan.hasNextLine()) {
 			message = scan.nextLine();
-			System.err.println("read " + message);
+			System.err.println("read: " + message);
 			tokens = message.split("\\s+");
 			prefix = tokens[0];
     		
