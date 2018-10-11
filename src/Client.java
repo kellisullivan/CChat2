@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-import sun.misc.Lock;
+import un.misc.*;
 
 
 public class Client {
