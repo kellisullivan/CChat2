@@ -50,6 +50,7 @@ public class GroupRouter extends Server {
 				String[] tokens = message.split("\\s+");
 				numberClients=0;
 				keyArray[0]= Integer.parseInt(tokens[1]);
+				System.err.println(keyArray[0]);
 				keyArray[1]=numberClients;
 				chatServers.put(csAddress, keyArray);
 				System.err.println("Message is NULL");
