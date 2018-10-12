@@ -17,7 +17,7 @@ public class Welcome extends Thread{
 	JTextField groupnameInput;
 	JTextField passwordInput;
 	String[] info = new String[3];
-	Boolean finished;
+	volatile Boolean finished;
 
 
 	public Welcome(boolean isDone) throws InterruptedException {

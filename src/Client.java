@@ -19,6 +19,7 @@ public class Client {
 	private static String initialize = "INIT ";
 	private static String identification = "IDNT \n";
 	private static ChatRoomGUI chatroom;
+	private static volatile boolean done;
 
 
 	
@@ -172,7 +173,7 @@ public class Client {
 	
 	public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException, IOException {
 		//create a new lock to use to wait for our threads
-		boolean done = false;
+		done = false;
 		
 		//create the GUI
 		Welcome welcome = new Welcome(done);

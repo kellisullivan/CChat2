@@ -20,6 +20,7 @@ public class ChatRoomGUI {
 	private static String chatroom;
 	private static JFrame frame;
 	private volatile static String messageTyped;
+	private static JTextArea chat;
 	
 	public ChatRoomGUI(String groupname) {
 		chatroom = groupname;
@@ -43,11 +44,6 @@ public class ChatRoomGUI {
 
 		label.setText(chatroom);
 		
-		Label label_1 = new Label("");
-		label_1.setBackground(Color.WHITE);
-		label_1.setBounds(35, 104, 697, 336);
-		frame.getContentPane().add(label_1);
-		
 		textField = new JTextField();
 		textField.setBounds(35, 491, 697, 54);
 		frame.getContentPane().add(textField);
@@ -58,11 +54,18 @@ public class ChatRoomGUI {
 		btnSend.setBounds(617, 561, 115, 29);
 		frame.getContentPane().add(btnSend);
 		
+		chat = new JTextArea();
+		chat.setEditable(false);
+		chat.setLineWrap(true);
+		chat.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		chat.setBounds(35, 102, 697, 373);
+		frame.getContentPane().add(chat);
+		
 		btnSend.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String statement = textField.getText();
 					messageTyped = statement;
-					System.err.print("message: " + messageTyped);
+					System.err.println("message: " + messageTyped + "\n");
 					textField.setText("");
 				}
 			});
@@ -70,20 +73,16 @@ public class ChatRoomGUI {
 		frame.setVisible(true);
 		
 	}
-		
 	
 	public void editMessage() {
 		messageTyped = null;
 	}
+	
+	public void addChat(String username, String message) {
+		chat.append( "<" + username + ">" + message);
+	}
+		
 	public String getMessage() {
-		if (messageTyped != null) {
-			System.err.println("get message " + messageTyped);
-		}
 		return messageTyped;
 	}
-	
-	
-
-
-
 }
