@@ -37,6 +37,7 @@ public class ReadClient extends Thread{
 	            if (prefix.equals("FWRD")) {
 	            	String username = tokens[1];
 	            	String printMessage = tokens[2];
+	            	chatroom.addChat(username, printMessage);
 	            	System.out.println(username + ": " + printMessage);
 	    		}
 	    	}

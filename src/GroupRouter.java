@@ -5,45 +5,56 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.*;
 
 public class GroupRouter extends Server {
 
 	private byte[] rbuf;
 	int bytesRead;
-	String message;
+	volatile String message;
 	String prefix=new String();
 	String PING="PING";
 	HashMap<String,Integer[]> chatServers= new HashMap<String, Integer[]>();
 	int numberClients;
-	String ACPT="ACPT";
+	String ACPT= "ACPT";
 	String LEFT= "LEFT";
-	String FWRD="FWRD";
-	String IDNT="IDNT";
+	String FWRD= "FWRD";
+	String IDNT= "IDNT";
 	String DENY= "DENY";
+	String NULL= "NULL \n";
+	private ArrayList<Socket> sockArray=new ArrayList<Socket>();
 	
 	public GroupRouter() {
 	}
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
+		//System.err.println("Reading");
 		// Wait for client's request and then write the request to server socket (send to server)
 		String csAddress;
 		int csPort;
 		Integer[] keyArray=new Integer[2];
-
 		InputStream stream = readSock.getInputStream();
 		Scanner scan = new Scanner(stream, "US-ASCII");
 		while (scan.hasNextLine()) {
 			message = scan.nextLine();
-			prefix=message.substring(0,3);
+			System.err.println("Message recieved: " + message);
+			prefix=message.substring(0,4);
+			System.err.println("prefix is: " + prefix);
+			if(!sockArray.contains(readSock) && !prefix.equals(IDNT)) {
+				sockArray.add(readSock);
+			}
 			if(prefix.equals(PING)) {
 				csAddress=readSock.getInetAddress().getHostAddress().toString();
-				csPort=readSock.getPort();
+				//csPort=readSock.getPort();
+				String[] tokens = message.split("\\s+");
 				numberClients=0;
-				keyArray[0]=csPort;
+				keyArray[0]= Integer.parseInt(tokens[1]);
 				keyArray[1]=numberClients;
 				chatServers.put(csAddress, keyArray);
-				return null;
+				System.err.println("Message is NULL");
+				return NULL;
+				
 			}
 			if(prefix.equals(IDNT)) {
 				Set<String> chatIPs;	
@@ -60,34 +71,50 @@ public class GroupRouter extends Server {
 						}
 						if(min==10) {
 							String messageTo=new String(DENY + " " + '\n');
+							System.err.println("Message is " + messageTo);
 							return messageTo;
 						}
 					}
 					min++;
 				}
 				String messageTo= new String(ACPT + " " + chatServer[0] + " " + chatServer[1] + " " + '\n');
+				System.err.println("Message is " + messageTo);
 				return messageTo;
 			}
 			if(prefix.equals(LEFT)) {
 				numberClients--;
-				return null;
+				System.err.println("Message is NULL");
+				return NULL;
 			}
 			if(prefix.equals(FWRD)) {
-				return message;
+				message += " \n";
+				for(Socket sock:sockArray){
+					System.err.println("Forwarding to " + sock);
+					this.write(sock, message);
+				}
 			}
+			if(prefix.equals(NULL)) {
+				System.err.println("Message is NULL");
+				return NULL;
 			}
-		return null;
+		}
+		//System.err.println("Incorrect message recieved, message is NULL");
+		return NULL;
 	}
 		@Override
 		public void write(Socket writeSock, String message) throws IOException {
-			if(!message.equals(null)) {
-				writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
-			}		
+			if (!message.equals(NULL)) {
+				System.err.println("Writing message: " + message);
+			}
+			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());	
+			if (!message.equals(NULL)) {
+				System.err.print("just wrote");
+			}
 		}
 
-		public static void main() {
+		public static void main(String[] args) throws IOException {
 			GroupRouter gr=new GroupRouter();
-			gr.listenConnect(ipAddress, port);
+			gr.listenConnect("127.0.0.1", 4065);
 		}
 
 	}
