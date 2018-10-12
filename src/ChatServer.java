@@ -72,7 +72,6 @@ public class ChatServer extends Server {
 		//Grab and store Client's sockets
 		if((!clientSockets.contains(readSock)) && readSock.getPort() != groupRouterSock.getPort()) {
 			System.err.println(readSock.getPort());
-			System.err.println("true");
 			clientSockets.add(readSock);
 			toGroupRouter.update(clientSockets);
 		}
@@ -97,9 +96,20 @@ public class ChatServer extends Server {
 			tokens = message.split("\\s+");
 			prefix = tokens[0];
     		
-            if (prefix.equals("FWRD")) {
+			if(prefix.equals("HELO")) {
+				System.err.println("Client entered, must be forwarded to group router.");
+    			message+= "\n";
+    			this.write(groupRouterSock, message);
+    			return NULL;
+			}
+			else if (prefix.equals("FWRD")) {
             	message += " \n";
             	System.err.println("Message to forward to Clients");
+    			return message;
+    		}
+			else if (prefix.equals("LEFT")) {
+            	message += " \n";
+            	System.err.println("Left message to forward to Clients");
     			return message;
     		}
             else if (prefix.equals("TEXT")) {
