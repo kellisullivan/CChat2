@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import javax.swing.JTextArea;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+
 import java.awt.Font;
 import java.util.Scanner;
 
@@ -42,12 +44,12 @@ public class ChatRoomGUI {
 		label.setBounds(15, 25, 738, 85);
 		frame.getContentPane().add(label);
 
-		label.setText(chatroom);
+		label.setText(chatroom + " Major " + "Chatroom");
 		
 		textField = new JTextField();
 		textField.setBounds(35, 491, 697, 54);
+		textField.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 20));
 		frame.getContentPane().add(textField);
-		textField.setColumns(10);
 		
 		JButton btnSend = new JButton("SEND");
 		btnSend.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -57,9 +59,14 @@ public class ChatRoomGUI {
 		chat = new JTextArea();
 		chat.setEditable(false);
 		chat.setLineWrap(true);
-		chat.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		chat.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 18));
 		chat.setBounds(35, 102, 697, 373);
-		frame.getContentPane().add(chat);
+		
+		JScrollPane scrollPane = new JScrollPane(chat);
+		scrollPane.setSize(697, 345);
+		scrollPane.setLocation(35, 111);
+		frame.getContentPane().add(scrollPane);
+		
 		
 		btnSend.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -79,7 +86,7 @@ public class ChatRoomGUI {
 	}
 	
 	public void addChat(String username, String message) {
-		chat.append( "<" + username + ">" + message);
+		chat.append(username +": " + message + "\n");
 	}
 		
 	public String getMessage() {
