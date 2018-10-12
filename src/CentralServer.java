@@ -7,54 +7,52 @@ import java.util.Scanner;
 
 public class CentralServer extends Server {
 	
-	int bytesRead;
-	int counter;
-	Boolean isEndOfLine;
+	GroupRoutersTable grTable;
 	
 	public CentralServer() {
+		grTable = new GroupRoutersTable();
+		grTable.inputFileData();
 	}
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
 		String message = null;
 		String prefix;
-		String username;
 		String groupname;
 		String password;
-		counter = 0;
 		InputStream stream = readSock.getInputStream();
 		Scanner scan = new Scanner(stream, "US-ASCII");
 		while (scan.hasNextLine()) {
 			message = scan.nextLine();
-			System.err.println("read " + message);
+			System.err.println("read: " + message);
 			String[] tokens = message.split("\\s+");
 			
-	    	if (tokens.length != 4) {
-	    		message = "DENY\n";
+	    	if (tokens.length != 3) {
+	    		message = "DENY \n";
 	    	}
 	    	else {
 	    		prefix = tokens[0];
-	    		username = tokens[1];
-	        	groupname = tokens[2];
-	        	password = tokens[3];
+	        	groupname = tokens[1];
+	        	password = tokens[2];
 	            if (prefix.equals("INIT")) {
-	            	String gsIPAddress = "ip address";
-	            	int gsPort = 0;
-	            	message = "ACPT " + gsIPAddress + " " + gsPort + " \n";
+	            	message = grTable.authenticateUser(groupname, password);
 	    		}
 	            else {
-	            	message = "DENY\n";
+	            	message = "DENY \n";
 	            }
 	    	}
+			System.err.println("wrote: " + message);
+	        return message;
     	}
-		System.err.println("mess " + message);
-        return message;
+		return message;
 	}
 
 	@Override
 	public void write(Socket writeSock, String message) throws IOException {
 		byte[] rbuf = message.getBytes("US-ASCII");
 		writeSock.getOutputStream().write(rbuf, 0, rbuf.length);
+		// Close socket after writing message back to client
+		writeSock.close();
 	}
 
 	public static void main(String[] args) throws IOException {
