@@ -23,6 +23,7 @@ public class GroupRouter extends Server {
 	String DENY= "DENY";
 	String HELO= "HELO";
 	String NULL= "NULL \n";
+	private int counter;
 	private ArrayList<Socket> sockArray=new ArrayList<Socket>();
 	
 	public GroupRouter() {
@@ -46,14 +47,16 @@ public class GroupRouter extends Server {
 				sockArray.add(readSock);
 			}
 			if(prefix.equals(PING)) {
-				csAddress=readSock.getInetAddress().getHostAddress().toString();
+				csAddress=counter + readSock.getInetAddress().getHostAddress().toString();
 				//csPort=readSock.getPort();
 				String[] tokens = message.split("\\s+");
-				numberClients=0;
+				int initialNumClients=0;
 				keyArray[0]= Integer.parseInt(tokens[1]);
-				keyArray[1]=numberClients;
+				System.err.println(csAddress);
+				keyArray[1]=initialNumClients;
 				chatServers.put(csAddress, keyArray);
 				System.err.println("Message is NULL");
+				counter++;
 				return NULL;
 				
 			}
@@ -65,20 +68,28 @@ public class GroupRouter extends Server {
 				while(min<10) {
 					for(String key: chatIPs) {
 						numberClients=chatServers.get(key)[1];
+						System.err.println("numberClients: " + numberClients);
+						System.err.println("min: " + min);
 						if (numberClients==min) {
-							chatServer[0]=key;
+							chatServer[0]=key.substring(1, key.length()); 
+							System.err.println("key IP: " + chatServer[0]);
 							chatServer[1]=chatServers.get(key)[0].toString();
+							System.err.println("value port: " + chatServer[1]);
+							Integer[] temp = chatServers.get(key);
 							numberClients++;
-						}
-						if(min==10) {
-							String messageTo=new String(DENY + " " + '\n');
+							temp[1] = numberClients;
+							System.err.println("port of chosen CS " + temp[0]);
+							System.err.println("clients in chosen CS " + temp[1]);
+							chatServers.replace(key, temp);
+							String messageTo= new String(ACPT + " " + chatServer[0] + " " + chatServer[1] + " " + '\n');
 							System.err.println("Message is " + messageTo);
 							return messageTo;
 						}
 					}
 					min++;
+					System.err.println("min: " + min);
 				}
-				String messageTo= new String(ACPT + " " + chatServer[0] + " " + chatServer[1] + " " + '\n');
+				String messageTo=new String(DENY + " " + '\n');
 				System.err.println("Message is " + messageTo);
 				return messageTo;
 			}
