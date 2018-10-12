@@ -83,7 +83,11 @@ public class GroupRouter extends Server {
 			}
 			if(prefix.equals(LEFT)) {
 				numberClients--;
-				System.err.println("Message is NULL");
+				message += " \n";
+				for(Socket sock:sockArray){
+					System.err.println("Forwarding to " + sock);
+					this.write(sock, message);
+				}
 				return NULL;
 			}
 			if(prefix.equals(FWRD)) {
