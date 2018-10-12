@@ -21,6 +21,7 @@ public class GroupRouter extends Server {
 	String FWRD= "FWRD";
 	String IDNT= "IDNT";
 	String DENY= "DENY";
+	String HELO= "HELO";
 	String NULL= "NULL \n";
 	private ArrayList<Socket> sockArray=new ArrayList<Socket>();
 	
@@ -83,7 +84,19 @@ public class GroupRouter extends Server {
 			}
 			if(prefix.equals(LEFT)) {
 				numberClients--;
-				System.err.println("Message is NULL");
+				message += " \n";
+				for(Socket sock:sockArray){
+					System.err.println("Forwarding to " + sock);
+					this.write(sock, message);
+				}
+				return NULL;
+			}
+			if(prefix.equals(HELO)) {
+				message += " \n";
+				for(Socket sock:sockArray){
+					System.err.println("Forwarding to " + sock);
+					this.write(sock, message);
+				}
 				return NULL;
 			}
 			if(prefix.equals(FWRD)) {
