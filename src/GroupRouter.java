@@ -103,6 +103,7 @@ public class GroupRouter extends Server {
 				return NULL;
 			}
 			if(prefix.equals(HELO)) {
+				System.err.println("got message" + message);
 				message += " \n";
 				for(Socket sock:sockArray){
 					System.err.println("Forwarding to " + sock);
