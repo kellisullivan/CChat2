@@ -138,9 +138,11 @@ public class GroupRouter extends Server {
 		}
 
 		public static void main(String[] args) throws IOException {
+			String ipAddress=new String(args[0]);
+			int port = Integer.parseInt(args[1]);
 			GroupRouter gr=new GroupRouter();
-			int port = Integer.parseInt(args[0]);
-			gr.listenConnect("127.0.0.1", port);
+			gr.listenConnect(ipAddress, port);
+		
 		}
 
 	}
