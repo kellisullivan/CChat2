@@ -21,7 +21,7 @@ public class ChatServer extends Server {
 	private String groupRouterIP = "127.0.0.1";
 	private String left = "LEFT ";
 	private volatile ArrayList<Socket> clientSockets = new ArrayList<Socket>();
-	//private static final String PING = "PING 7000 \n";
+	private static final String PING = "PING 7000 \n";
 	private static final String NULL = "NULL \n";
 	
 
@@ -99,13 +99,24 @@ public class ChatServer extends Server {
 			tokens = message.split("\\s+");
 			prefix = tokens[0];
     		
-            if (prefix.equals("FWRD")) {
+			if(prefix.equals("HELO")) {
+				System.err.println("Client entered, must be forwarded to group router");
+    			message+= "\n";
+    			this.write(groupRouterSock, message);
+    			return NULL;
+			}
+			else if (prefix.equals("FWRD")) {
             	message += " \n";
-            	System.err.println("Message to forward to Clients");
+            	System.err.println("Text to forward to Clients");
+    			return message;
+    		}
+			else if (prefix.equals("LEFT")) {
+            	message += " \n";
+            	System.err.println("Client left, must be forwarded to Group Router");
     			return message;
     		}
             else if (prefix.equals("TEXT")) {
-    			System.err.println("Client sent this message, must be forwarded.");
+    			System.err.println("Client sent this message, must be forwarded to Group Router");
     			tokens = message.split(" ");
     			username = tokens[1];
     			message = "FWRD "+username+ " ";
@@ -144,6 +155,7 @@ public class ChatServer extends Server {
 		int port = rand.nextInt(65536);
 		chatserver.connectToGroupRouter(port);
 		chatserver.listenConnect("127.0.0.1", port);
+		
 		
 	}
 }
