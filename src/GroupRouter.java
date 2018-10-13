@@ -48,10 +48,10 @@ public class GroupRouter extends Server {
 			}
 			if(prefix.equals(PING)) {
 				csAddress=counter + readSock.getInetAddress().getHostAddress().toString();
-				//csPort=readSock.getPort();
 				String[] tokens = message.split("\\s+");
 				int initialNumClients=0;
 				keyArray[0]= Integer.parseInt(tokens[1]);
+				System.err.println(tokens[1]);
 				System.err.println(csAddress);
 				keyArray[1]=initialNumClients;
 				chatServers.put(csAddress, keyArray);
@@ -138,11 +138,10 @@ public class GroupRouter extends Server {
 		}
 
 		public static void main(String[] args) throws IOException {
-			String ipAddress=new String(args[0]);
-			int port = Integer.parseInt(args[1]);
 			GroupRouter gr=new GroupRouter();
+			int port = Integer.parseInt(args[1]);
+			String ipAddress= new String(args[0]);
 			gr.listenConnect(ipAddress, port);
-		
 		}
 
 	}
