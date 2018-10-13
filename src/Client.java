@@ -20,6 +20,7 @@ public class Client {
 	private static String identification = "IDNT \n";
 	private static ChatRoomGUI chatroom;
 	private static volatile boolean done;
+	private static volatile boolean left;
 
 
 	
@@ -78,7 +79,7 @@ public class Client {
 	
 	public static void groupRouterSocket(String ipAddress, int port) throws IOException {
 		
-		chatroom = new ChatRoomGUI(groupname);
+		chatroom = new ChatRoomGUI(groupname, left);
 		System.err.println("read4");
 		Socket sock;
 	    InetAddress server_address;
@@ -167,7 +168,12 @@ public class Client {
 	    System.err.println("CS4");
 	    read.start();
 	    write.start();
-	    
+	    while(chatroom.left() == false) {
+	    	
+	    }
+	    String leftMessage = "BYEE " + server_address.getHostAddress() + " " + username + " \n";
+	    sock.getOutputStream().write(leftMessage.getBytes("US-ASCII"), 0, leftMessage.length());
+	    System.exit(0);
 	}
 	
 	
@@ -178,7 +184,7 @@ public class Client {
 	public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException, IOException {
 		//create a new lock to use to wait for our threads
 		done = false;
-		
+		left = false;
 		//create the GUI
 		Welcome welcome = new Welcome(done);
 		

@@ -21,6 +21,7 @@ public class ChatServer extends Server {
 	private volatile ArrayList<Socket> clientSockets = new ArrayList<Socket>();
 	private static final String PING = "PING 7000 \n";
 	private static final String NULL = "NULL \n";
+	private static int csPort;
 	
 
 	public ChatServer() {
@@ -32,6 +33,7 @@ public class ChatServer extends Server {
 		try{
 			// Setup the server side connection data to Group Router
 			groupRouterAddress = InetAddress.getByName(grIP);
+
 			endpoint = new InetSocketAddress(groupRouterAddress, port);
 
 			//Make a TCP connection 
@@ -47,7 +49,7 @@ public class ChatServer extends Server {
 				return;
 			}
 			
-			String ping = "PING " + port + " \n";
+			String ping = "PING " + csPort + " \n";
 			//Send group router the PING message as soon as it connects
 			System.err.println("About to write PING");
 			this.write(groupRouterSock, ping);
@@ -116,7 +118,7 @@ public class ChatServer extends Server {
     		}
 			else if (prefix.equals("BYEE")) {
 				System.err.println("Client entered, must be forwarded to group router");
-    			message = "LEFT " + tokens[1] + tokens[2] + "/n";
+    			message = "LEFT " + tokens[1] + " " + tokens[2] + " \n";
     			this.write(groupRouterSock, message);
     			return NULL;
 			}
@@ -162,7 +164,7 @@ public class ChatServer extends Server {
 
 	public static void main(String[] args) throws IOException {
 		String csIP = args[0];
-		int csPort = Integer.parseInt(args[1]);
+		csPort = Integer.parseInt(args[1]);
 		String groupRouterIP = args[2];
 		int grPort = Integer.parseInt(args[3]);
 		ChatServer chatserver = new ChatServer();
