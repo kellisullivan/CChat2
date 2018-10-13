@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 
 public class ChatServer extends Server {
@@ -18,7 +17,6 @@ public class ChatServer extends Server {
 	private InetSocketAddress endpoint;
 	private String localIP;
 	private ChatServerProcesses toGroupRouter;
-	private String groupRouterIP = "127.0.0.1";
 	private String left = "LEFT ";
 	private volatile ArrayList<Socket> clientSockets = new ArrayList<Socket>();
 	private static final String PING = "PING 7000 \n";
@@ -30,23 +28,11 @@ public class ChatServer extends Server {
 	}
 
 	// Make a new connection to a server
-	private void connectToGroupRouter(int port) {
+	private void connectToGroupRouter(String grIP, int port) {
 		try{
 			// Setup the server side connection data to Group Router
-			groupRouterAddress = InetAddress.getByName(groupRouterIP);
-			Random rand = new Random();
-			int grPort;
-			int random = rand.nextInt(2);
-			if (random == 0) {
-				grPort = 4065;
-			}
-			else if (random == 1) {
-				grPort = 4067;
-			}
-			else {
-				grPort = 4072;
-			}
-			endpoint = new InetSocketAddress(groupRouterAddress, grPort);
+			groupRouterAddress = InetAddress.getByName(grIP);
+			endpoint = new InetSocketAddress(groupRouterAddress, port);
 
 			//Make a TCP connection 
 			groupRouterSock = new Socket();
@@ -175,11 +161,13 @@ public class ChatServer extends Server {
 	}
 
 	public static void main(String[] args) throws IOException {
+		String csIP = args[0];
+		int csPort = Integer.parseInt(args[1]);
+		String groupRouterIP = args[2];
+		int grPort = Integer.parseInt(args[3]);
 		ChatServer chatserver = new ChatServer();
-		Random rand = new Random();
-		int port = rand.nextInt(65536);
-		chatserver.connectToGroupRouter(port);
-		chatserver.listenConnect("127.0.0.1", port);
+		chatserver.connectToGroupRouter(groupRouterIP, grPort);
+		chatserver.listenConnect(csIP, csPort);
 		
 		
 	}
