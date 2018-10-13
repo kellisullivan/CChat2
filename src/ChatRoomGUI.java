@@ -37,7 +37,6 @@ public class ChatRoomGUI {
 		    public void windowClosing(java.awt.event.WindowEvent e) {
 		    	left = true;
 		        e.getWindow().dispose();
-		        System.out.println("JFrame Closed!");
 		    }
 		});
 		createGUI();
