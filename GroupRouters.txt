@@ -15,12 +15,12 @@ Feminist & Gender Studies:127.0.0.1:4063:7erf4d1v
 Film and Media Studies:127.0.0.1:4064:k4ijuyht5g1f
 French:127.0.0.1:4065:a
 Geology:127.0.0.1:4066:5dsfg4h
-German:127.0.0.1:4067:1vfd45gr7t
+German:127.0.0.1:4067:b
 History:127.0.0.1:4068:re74fd1v
 History-Philosophy:127.0.0.1:4069:4efwe4frg
 History-Political Science:127.0.0.1:4070:4jhygt5f5fe
 International Political Economy:127.0.0.1:4071:a5s4deaws6
-Italian:127.0.0.1:4072:a6sdef5gthy4
+Italian:127.0.0.1:4072:c
 Mathematical Economics:127.0.0.1:4073:e2rw1fdc54
 Mathematics:127.0.0.1:4074:x78bf4dgtr1
 Molecular Biology:127.0.0.1:4075:afh4tsr541

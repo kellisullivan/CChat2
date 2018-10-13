@@ -34,7 +34,19 @@ public class ChatServer extends Server {
 		try{
 			// Setup the server side connection data to Group Router
 			groupRouterAddress = InetAddress.getByName(groupRouterIP);
-			endpoint = new InetSocketAddress(groupRouterAddress, 4065);
+			Random rand = new Random();
+			int grPort;
+			int random = rand.nextInt(2);
+			if (random == 0) {
+				grPort = 4065;
+			}
+			else if (random == 1) {
+				grPort = 4067;
+			}
+			else {
+				grPort = 4072;
+			}
+			endpoint = new InetSocketAddress(groupRouterAddress, grPort);
 
 			//Make a TCP connection 
 			groupRouterSock = new Socket();
