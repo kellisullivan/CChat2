@@ -24,10 +24,11 @@ public class ChatServerProcesses extends Thread{
 				if (!message.equals("NULL \n")) {
 					System.err.println("running thread");
 				}
-				if (message.substring(0, 4).equals("FWRD")) {
+				if (message.substring(0, 4).equals("FWRD") || message.substring(0, 4).equals("LEFT") || message.substring(0, 4).equals("HELO")) {
+					System.out.println("This is the spot where we should be.");
 					for(Socket clientSocket: clientSocks) {
 						clientSocket.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
-	            		//chatServer.write(clientSocket, message);
+
 	            	}
 				}
 				else{

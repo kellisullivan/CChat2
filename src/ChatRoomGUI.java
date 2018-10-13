@@ -88,6 +88,14 @@ public class ChatRoomGUI {
 	public void addChat(String username, String message) {
 		chat.append(username +": " + message + "\n");
 	}
+	
+	public void addUser(String username) {
+		chat.append(username + "\n");
+	}
+	
+	public void removeUser(String username) {
+		chat.append(username + "\n");
+	}
 		
 	public String getMessage() {
 		return messageTyped;
