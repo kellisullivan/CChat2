@@ -103,6 +103,7 @@ public class GroupRouter extends Server {
 				return NULL;
 			}
 			if(prefix.equals(HELO)) {
+				System.err.println("got message" + message);
 				message += " \n";
 				for(Socket sock:sockArray){
 					System.err.println("Forwarding to " + sock);
@@ -138,7 +139,8 @@ public class GroupRouter extends Server {
 
 		public static void main(String[] args) throws IOException {
 			GroupRouter gr=new GroupRouter();
-			gr.listenConnect("127.0.0.1", 4065);
+			int port = Integer.parseInt(args[0]);
+			gr.listenConnect("127.0.0.1", port);
 		}
 
 	}

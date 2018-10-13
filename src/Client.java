@@ -156,6 +156,10 @@ public class Client {
 	        System.exit(1);
 			return;
 	    }		
+	    String helloMessage = "HIII " + username + " \n";
+	    System.out.println(server_address.getHostAddress());
+	    sock.getOutputStream().write(helloMessage.getBytes("US-ASCII"), 0, helloMessage.length());
+	    
 	    System.err.println("CS2");
 	    ReadClient read = new ReadClient(chatroom, sock);
 	    System.err.println("CS3");

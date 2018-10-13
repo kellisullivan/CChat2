@@ -34,7 +34,19 @@ public class ChatServer extends Server {
 		try{
 			// Setup the server side connection data to Group Router
 			groupRouterAddress = InetAddress.getByName(groupRouterIP);
-			endpoint = new InetSocketAddress(groupRouterAddress, 4065);
+			Random rand = new Random();
+			int grPort;
+			int random = rand.nextInt(2);
+			if (random == 0) {
+				grPort = 4065;
+			}
+			else if (random == 1) {
+				grPort = 4067;
+			}
+			else {
+				grPort = 4072;
+			}
+			endpoint = new InetSocketAddress(groupRouterAddress, grPort);
 
 			//Make a TCP connection 
 			groupRouterSock = new Socket();
@@ -82,7 +94,7 @@ public class ChatServer extends Server {
 		//Check if Client has disconnected
 		if (!readSock.isConnected()) {
 	    	  left += localIP + " \n";
-	    	  readSock.getOutputStream().write(left.getBytes("US-ASCII"),0,left.length());
+	    	  //readSock.getOutputStream().write(left.getBytes("US-ASCII"),0,left.length());
 	    	  readSock.close();
 		}
 		// Wait for client's request and then write the request to server socket (send to server)
@@ -99,24 +111,36 @@ public class ChatServer extends Server {
 			tokens = message.split("\\s+");
 			prefix = tokens[0];
     		
-			if(prefix.equals("HELO")) {
-				System.err.println("Client entered, must be forwarded to group router.");
-    			message+= "\n";
+			if(prefix.equals("HIII")) {
+				System.err.println("Client entered, must be forwarded to group router");
+    			message = "HELO " + tokens[1] + " \n";
     			this.write(groupRouterSock, message);
+    			System.err.println("I Wrote.");
     			return NULL;
+			}
+			else if (prefix.equals("HELO")) {
+				message += " \n";
+            	System.err.println("Text to forward to Clients");
+    			return message;
 			}
 			else if (prefix.equals("FWRD")) {
             	message += " \n";
-            	System.err.println("Message to forward to Clients");
+            	System.err.println("Text to forward to Clients");
     			return message;
     		}
+			else if (prefix.equals("BYEE")) {
+				System.err.println("Client entered, must be forwarded to group router");
+    			message = "LEFT " + tokens[1] + tokens[2] + "/n";
+    			this.write(groupRouterSock, message);
+    			return NULL;
+			}
 			else if (prefix.equals("LEFT")) {
             	message += " \n";
-            	System.err.println("Left message to forward to Clients");
+            	System.err.println("Client left, must be forwarded to Group Router");
     			return message;
     		}
             else if (prefix.equals("TEXT")) {
-    			System.err.println("Client sent this message, must be forwarded.");
+    			System.err.println("Client sent this message, must be forwarded to Group Router");
     			tokens = message.split(" ");
     			username = tokens[1];
     			message = "FWRD "+username+ " ";
@@ -144,7 +168,8 @@ public class ChatServer extends Server {
 
 	@Override
 	public void write(Socket writeSock, String message) throws IOException {
-		if (!message.substring(0,4).equals("NULL") || !message.substring(0,4).equals("FWRD") ) {
+		if (!message.substring(0,4).equals("NULL") || !message.substring(0,4).equals("FWRD")) {
+			System.err.println("message:" + message);
 			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
 		}
 	}
