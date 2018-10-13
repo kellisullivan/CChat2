@@ -6,9 +6,11 @@ import java.util.Scanner;
 public class GroupRoutersTable {
 	
 	HashMap<String, GroupRouterID> GroupRouterMap;
+	Crypto crypt;
 	
 	public GroupRoutersTable() {
 		GroupRouterMap = new HashMap<String, GroupRouterID>();
+		crypt = new Crypto(7);
 	}
 	
 	public void inputFileData() {
@@ -18,7 +20,7 @@ public class GroupRoutersTable {
 			while (scan.hasNextLine()) {
 				currLine = scan.nextLine().split(":");
 				String groupnameKey = currLine[0];
-				GroupRouterID grIDValue = new GroupRouterID(currLine[1], Integer.parseInt(currLine[2]), currLine[3]);
+				GroupRouterID grIDValue = new GroupRouterID(currLine[1], currLine[2], currLine[3]);
 				GroupRouterMap.putIfAbsent(groupnameKey, grIDValue);
 			}
 		} catch (FileNotFoundException e) {
@@ -32,12 +34,10 @@ public class GroupRoutersTable {
 	// check if password entered by client matches that of specified group chat
 	public String authenticateUser(String groupname, String password) {
 		if (GroupRouterMap.containsKey(groupname)) {
-			System.err.println(groupname);
 			GroupRouterID chosenGR = GroupRouterMap.get(groupname);
-			System.err.println(chosenGR);
-			if (password.equals(chosenGR.getPassword())) {
-				System.err.println("yes");
-				return "ACPT " + chosenGR.getIPAddress() + " " + chosenGR.getPort() + " \n";
+			String decryptedPass = crypt.decrypt(chosenGR.getPassword());
+			if (password.equals(decryptedPass)) {
+				return "ACPT " + crypt.decrypt(chosenGR.getIPAddress()) + " " + crypt.decrypt(chosenGR.getPort()) + " \n";
 			}
 		}
 		return "DENY \n";

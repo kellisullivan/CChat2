@@ -51,7 +51,6 @@ public class CentralServer extends Server {
 	public void write(Socket writeSock, String message) throws IOException {
 		byte[] rbuf = message.getBytes("US-ASCII");
 		writeSock.getOutputStream().write(rbuf, 0, rbuf.length);
-		// Close socket after writing message back to client
 		writeSock.close();
 	}
 

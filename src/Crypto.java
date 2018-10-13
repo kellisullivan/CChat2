@@ -20,6 +20,8 @@ public class Crypto {
                 c[i] = (char)(((c[i]-'a')+rotation)%26 + 'a');
             } else if('A'<=c[i] && 'Z'>=c[i]) {
                 c[i] = (char)(((c[i]-'A')+rotation)%26 + 'A');
+            } else if((int) 'a'<=(int) c[i] && (int) 'z'>=(int) c[i]) {
+            	c[i] = (char)(((c[i]-'a')+rotation)%26 + 'a');
             }
         }
         return new String(c);
