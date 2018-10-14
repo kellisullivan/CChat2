@@ -37,7 +37,7 @@ public class GroupRoutersTable {
 			System.err.println(chosenGR);
 			if (password.equals(chosenGR.getPassword())) {
 				System.err.println("yes");
-				return "ACPT " + chosenGR.getIPAddress() + " " + chosenGR.getPort() + " \n";
+				return "ACPT " + chosenGR.getIPAddress() + " " + chosenGR.getPort() + " " +System.getProperty("line.separator");
 			}
 		}
 		return "DENY \n";

@@ -81,7 +81,7 @@ public class GroupRouter extends Server {
 							System.err.println("port of chosen CS " + temp[0]);
 							System.err.println("clients in chosen CS " + temp[1]);
 							chatServers.replace(key, temp);
-							String messageTo= new String(ACPT + " " + chatServer[0] + " " + chatServer[1] + " " + '\n');
+							String messageTo= new String(ACPT + " " + chatServer[0] + " " + chatServer[1] + " " + System.getProperty("line.separator"));
 							System.err.println("Message is " + messageTo);
 							return messageTo;
 						}
@@ -89,13 +89,13 @@ public class GroupRouter extends Server {
 					min++;
 					System.err.println("min: " + min);
 				}
-				String messageTo=new String(DENY + " " + '\n');
+				String messageTo=new String(DENY + " " + System.getProperty("line.separator"));
 				System.err.println("Message is " + messageTo);
 				return messageTo;
 			}
 			if(prefix.equals(LEFT)) {
 				numberClients--;
-				message += " \n";
+				message += " " + System.getProperty("line.separator");
 				for(Socket sock:sockArray){
 					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);
@@ -104,7 +104,7 @@ public class GroupRouter extends Server {
 			}
 			if(prefix.equals(HELO)) {
 				System.err.println("got message" + message);
-				message += " \n";
+				message += " " + System.getProperty("line.separator");
 				for(Socket sock:sockArray){
 					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);
@@ -112,7 +112,7 @@ public class GroupRouter extends Server {
 				return NULL;
 			}
 			if(prefix.equals(FWRD)) {
-				message += " \n";
+				message += " " + System.getProperty("line.separator");
 				for(Socket sock:sockArray){
 					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);

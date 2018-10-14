@@ -28,7 +28,7 @@ public class CentralServer extends Server {
 			String[] tokens = message.split("\\s+");
 			
 	    	if (tokens.length != 3) {
-	    		message = "DENY \n";
+	    		message = "DENY " + System.getProperty("line.separator");
 	    	}
 	    	else {
 	    		prefix = tokens[0];
@@ -38,7 +38,7 @@ public class CentralServer extends Server {
 	            	message = grTable.authenticateUser(groupname, password);
 	    		}
 	            else {
-	            	message = "DENY \n";
+	            	message = "DENY " + System.getProperty("line.separator");
 	            }
 	    	}
 			System.err.println("wrote: " + message);
