@@ -23,14 +23,23 @@ public class ChatRoomGUI {
 	private static JFrame frame;
 	private volatile static String messageTyped;
 	private static JTextArea chat;
+	private volatile static boolean left;
 	
-	public ChatRoomGUI(String groupname) {
+	public ChatRoomGUI(String groupname, boolean info) {
+		left = info;
 		chatroom = groupname;
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.BLACK);
 		frame.getContentPane().setLayout(null);
 		frame.setSize(790,670);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent e) {
+		    	left = true;
+		        e.getWindow().dispose();
+
+		    }
+		});
 		createGUI();
 		frame.setVisible(true);
 	}
@@ -86,10 +95,22 @@ public class ChatRoomGUI {
 	}
 	
 	public void addChat(String username, String message) {
-		chat.append(username +": " + message + "\n");
+		chat.append(username +": " + message + System.getProperty("line.separator"));
+	}
+	
+	public void addUser(String username) {
+		chat.append(username + System.getProperty("line.separator"));
+	}
+	
+	public void removeUser(String username) {
+		chat.append(username + System.getProperty("line.separator"));
 	}
 		
 	public String getMessage() {
 		return messageTyped;
+	}
+	
+	public boolean left() {
+		return left;
 	}
 }

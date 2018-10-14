@@ -1,6 +1,7 @@
 import java.net.Socket;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 public class ChatServerProcesses extends Thread{
 
 	private Socket socket;
@@ -18,9 +19,15 @@ public class ChatServerProcesses extends Thread{
 	}
 	
 	public void run(){
+		String message;
+		int counter = 0;
 		try {
 			while(true){
-				String message = chatServer.read(socket);
+				System.err.println(counter);
+				if (counter == 10) {
+					//socket.close();
+				}
+				message = chatServer.read(socket);
 				if (!message.equals("NULL \n")) {
 					System.err.println("running thread");
 				}
@@ -33,11 +40,20 @@ public class ChatServerProcesses extends Thread{
 				else{
 					chatServer.write(socket, message);
 				}
+				counter ++;
 			}
 		} 
 		catch (IOException e) {
 			System.out.println("Something went wrong while threading...");
 			e.printStackTrace();
+			message = "DEAD \n";
+			for(Socket clientSocket: clientSocks) {
+				try {
+					clientSocket.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
+				} catch (UnsupportedEncodingException e1) {
+				} catch (IOException e1) {
+				}
+        	}
 		}
 	}
 }

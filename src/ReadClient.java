@@ -9,10 +9,12 @@ public class ReadClient extends Thread{
 	Socket read;
 	String[] tokens;
 	String forward = "FRWD ";
+	volatile Client client;
 	
-	public ReadClient(ChatRoomGUI gui, Socket sock) {
+	public ReadClient(ChatRoomGUI gui, Socket sock, Client client) {
 		chatroom = gui;
 		read = sock;
+		this.client = client;
 	}
 	
 	public void run() {
@@ -43,6 +45,23 @@ public class ReadClient extends Thread{
 	            	chatroom.addChat(username, printMessage);
 	            	System.out.println(username + ": " + printMessage);
 	    		}
+	            else if(prefix.equals("HELO")) {
+	            	String username = tokens[1];
+	            	chatroom.addUser(username + " has joined the chat room.");
+	            }
+	            else if(prefix.equals("LEFT")) {
+	            	String username = tokens[2];
+	            	chatroom.removeUser(username + " has left the chat room.");
+	            }
+	            else if(prefix.equals("DEAD")) {
+	            	try {
+						read.close();
+						client.groupRouterSocket(client.getGrIPAddress(), client.getGrPort());
+					} catch (IOException e) {
+						System.err.println(e);
+						e.printStackTrace();
+					}
+	            }
 	    	}
 		}
 	}

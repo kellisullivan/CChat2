@@ -13,17 +13,20 @@ import java.util.Scanner;
 
 public class Client {
 	
-	private static String username;
-	private static String groupname;
-	private static String password;
-	private static String initialize = "INIT ";
-	private static String identification = "IDNT \n";
-	private static ChatRoomGUI chatroom;
+	private static volatile String username;
+	private static volatile String groupname;
+	private static volatile String password;
+	private static volatile String initialize = "INIT ";
+	private static volatile String identification = "IDNT \n";
+	private static volatile ChatRoomGUI chatroom;
 	private static volatile boolean done;
+	private static volatile boolean left;
+	private volatile String grIPAddress;
+	private volatile int grPort;
 
 
 	
-	public static void openCentralServerSocket() throws IOException, UnsupportedEncodingException{
+	public void openCentralServerSocket() throws IOException, UnsupportedEncodingException{
 	    Socket sock;
 	    InetAddress server_address;
 	    InetSocketAddress endpoint;
@@ -44,7 +47,7 @@ public class Client {
 			return;
 	    }
 	    
-		String send = initialize + groupname + " " + password + " \n";
+		String send = initialize + groupname + " " + password + " " + System.getProperty("line.separator");
 		sock.getOutputStream().write(send.getBytes("US-ASCII"),0,send.length());
 		
 		
@@ -59,11 +62,11 @@ public class Client {
 			tokens = message.split("\\s+");
 	    }
 		if (tokens[0].equals("ACPT")) {
-			String ipAddress = tokens[1];
-			int port = Integer.parseInt(tokens[2]);
-			groupRouterSocket(ipAddress, port);
-			System.err.println(ipAddress);
-			System.err.println(port);
+			grIPAddress = tokens[1];
+			grPort = Integer.parseInt(tokens[2]);
+			groupRouterSocket(grIPAddress, grPort);
+			System.err.println(grIPAddress);
+			System.err.println(grPort);
 		}
 		else if (tokens[0].equals("DENY")) {
 			WrongInfo error = new WrongInfo("Group name  or Password was incorrect.");
@@ -76,9 +79,9 @@ public class Client {
     }
 	
 	
-	public static void groupRouterSocket(String ipAddress, int port) throws IOException {
+	public void groupRouterSocket(String ipAddress, int port) throws IOException {
 		
-		chatroom = new ChatRoomGUI(groupname);
+		chatroom = new ChatRoomGUI(groupname, left);
 		System.err.println("read4");
 		Socket sock;
 	    InetAddress server_address;
@@ -135,7 +138,7 @@ public class Client {
 	    
 	}
 	
-	public static void chatServerSock(String ipAddress, int port) throws IOException {
+	public void chatServerSock(String ipAddress, int port) throws IOException {
 		System.err.println("CS");
 		Socket sock;
 	    InetAddress server_address;
@@ -156,25 +159,41 @@ public class Client {
 	        System.exit(1);
 			return;
 	    }		
+	    String helloMessage = "HIII " + username + " \n";
+	    System.out.println(server_address.getHostAddress());
+	    sock.getOutputStream().write(helloMessage.getBytes("US-ASCII"), 0, helloMessage.length());
+	    
 	    System.err.println("CS2");
-	    ReadClient read = new ReadClient(chatroom, sock);
+	    ReadClient read = new ReadClient(chatroom, sock, this);
 	    System.err.println("CS3");
 	    WriteClient write = new WriteClient(chatroom, sock, username);
 	    System.err.println("CS4");
 	    read.start();
 	    write.start();
-	    
+	    while(chatroom.left() == false) {
+	    	
+	    }
+	    String leftMessage = "BYEE " + server_address.getHostAddress() + " " + username + " \n";
+	    sock.getOutputStream().write(leftMessage.getBytes("US-ASCII"), 0, leftMessage.length());
+	    System.exit(0);
 	}
 	
 	
+	public String getGrIPAddress() {
+		return grIPAddress;
+	}
 
+
+	public int getGrPort() {
+		return grPort;
+	}
 
 
 	
 	public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException, IOException {
 		//create a new lock to use to wait for our threads
 		done = false;
-		
+		left = false;
 		//create the GUI
 		Welcome welcome = new Welcome(done);
 		
@@ -193,6 +212,8 @@ public class Client {
 		System.out.println("Groupname: " + groupname);
 		System.out.println("Password: " + password);
 		
-		openCentralServerSocket();
+		Client client = new Client();
+		client.openCentralServerSocket();
 	}
+
 }

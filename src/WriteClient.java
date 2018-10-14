@@ -22,7 +22,7 @@ public class WriteClient extends Thread{
 				
 			}
 			else {
-				String finalmessage = text + username + " " + message + " \n";
+				String finalmessage = text + username + " " + message + " " + System.getProperty("line.separator");
 				System.err.println(finalmessage);
 				byte[] rbuf = null;
 				try {

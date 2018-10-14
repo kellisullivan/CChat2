@@ -30,7 +30,7 @@ public class GroupRouter extends Server {
 	}
 
 	@Override
-	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
+	public String read(Socket readSock) throws IOException {
 		//System.err.println("Reading");
 		// Wait for client's request and then write the request to server socket (send to server)
 		String csAddress;
@@ -126,11 +126,17 @@ public class GroupRouter extends Server {
 		return NULL;
 	}
 		@Override
-		public void write(Socket writeSock, String message) throws IOException {
+		public void write(Socket writeSock, String message) {
 			if (!message.equals(NULL)) {
 				System.err.println("Writing message: " + message);
 			}
-			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());	
+			try {
+				writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
+			} catch (IOException e) {
+				e.printStackTrace();
+				chatServers.remove(writeSock.getInetAddress().getHostAddress().toString());
+				sockArray.remove(writeSock);
+			}	
 			if (!message.equals(NULL)) {
 				System.err.print("just wrote");
 			}
