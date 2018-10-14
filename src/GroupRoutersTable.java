@@ -37,7 +37,7 @@ public class GroupRoutersTable {
 			GroupRouterID chosenGR = GroupRouterMap.get(groupname);
 			String decryptedPass = crypt.decrypt(chosenGR.getPassword());
 			if (password.equals(decryptedPass)) {
-				return "ACPT " + crypt.decrypt(chosenGR.getIPAddress()) + " " + crypt.decrypt(chosenGR.getPort()) + " \n";
+				return "ACPT " + chosenGR.getIPAddress() + " " + chosenGR.getPort() + " \n";
 			}
 		}
 		return "DENY \n";
