@@ -20,6 +20,7 @@ public class Client {
 	private static String identification = "IDNT \n";
 	private static ChatRoomGUI chatroom;
 	private static volatile boolean done;
+	private static volatile boolean left;
 
 
 	
@@ -30,8 +31,8 @@ public class Client {
 
 	
 	    // Setup the server side connection data
-	    server_address = InetAddress.getByName("127.0.0.1");
-	    endpoint = new InetSocketAddress(server_address, 13306);
+	    server_address = InetAddress.getByName("172.16.136.199");
+	    endpoint = new InetSocketAddress(server_address, 2020);
 	    sock = new Socket();
 	
 
@@ -44,7 +45,7 @@ public class Client {
 			return;
 	    }
 	    
-		String send = initialize + groupname + " " + password + " \n";
+		String send = initialize + groupname + " " + password + " " + System.getProperty("line.separator");
 		sock.getOutputStream().write(send.getBytes("US-ASCII"),0,send.length());
 		
 		
@@ -78,7 +79,7 @@ public class Client {
 	
 	public static void groupRouterSocket(String ipAddress, int port) throws IOException {
 		
-		chatroom = new ChatRoomGUI(groupname);
+		chatroom = new ChatRoomGUI(groupname, left);
 		System.err.println("read4");
 		Socket sock;
 	    InetAddress server_address;
@@ -156,6 +157,10 @@ public class Client {
 	        System.exit(1);
 			return;
 	    }		
+	    String helloMessage = "HIII " + username + " \n";
+	    System.out.println(server_address.getHostAddress());
+	    sock.getOutputStream().write(helloMessage.getBytes("US-ASCII"), 0, helloMessage.length());
+	    
 	    System.err.println("CS2");
 	    ReadClient read = new ReadClient(chatroom, sock);
 	    System.err.println("CS3");
@@ -163,7 +168,12 @@ public class Client {
 	    System.err.println("CS4");
 	    read.start();
 	    write.start();
-	    
+	    while(chatroom.left() == false) {
+	    	
+	    }
+	    String leftMessage = "BYEE " + server_address.getHostAddress() + " " + username + " \n";
+	    sock.getOutputStream().write(leftMessage.getBytes("US-ASCII"), 0, leftMessage.length());
+	    System.exit(0);
 	}
 	
 	
@@ -174,7 +184,7 @@ public class Client {
 	public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException, IOException {
 		//create a new lock to use to wait for our threads
 		done = false;
-		
+		left = false;
 		//create the GUI
 		Welcome welcome = new Welcome(done);
 		

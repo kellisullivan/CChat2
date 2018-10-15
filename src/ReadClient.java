@@ -36,10 +36,21 @@ public class ReadClient extends Thread{
 	    		
 	            if (prefix.equals("FWRD")) {
 	            	String username = tokens[1];
-	            	String printMessage = tokens[2];
+	            	String printMessage = "";
+	            	for(int i = 2; i< tokens.length; i++) {
+	            		printMessage += tokens[i] + " ";
+	            	}
 	            	chatroom.addChat(username, printMessage);
 	            	System.out.println(username + ": " + printMessage);
 	    		}
+	            else if(prefix.equals("HELO")) {
+	            	String username = tokens[1];
+	            	chatroom.addUser(username + " has joined the chat room.");
+	            }
+	            else if(prefix.equals("LEFT")) {
+	            	String username = tokens[2];
+	            	chatroom.removeUser(username + " has left the chat room.");
+	            }
 	    	}
 		}
 	}
