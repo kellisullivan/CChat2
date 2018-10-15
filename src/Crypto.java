@@ -44,17 +44,4 @@ public class Crypto {
         }
         return new String(c);
     }
-    
-    public static void main(String[] args) {
-        System.out.println("Making crypto with key 13");
-        Crypto c = new Crypto(7);
-        String plain = "653546.";
-        String cypher;
-        System.out.println("Encrypting: "+plain);
-        cypher = c.encrypt(plain);
-        System.out.println("Got: "+cypher);
-        System.out.println("Decrypting: "+cypher);
-        plain = c.decrypt(cypher);
-        System.out.println("Got: "+plain);
-    }
 }
