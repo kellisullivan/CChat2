@@ -13,11 +13,7 @@ English:127.0.0.1:4061:78te4fd
 Environmental Studies Program:127.0.0.1:4062:we7\f541
 Feminist & Gender Studies:127.0.0.1:4063:7erf4d1v
 Film and Media Studies:127.0.0.1:4064:k4ijuyht5g1f
-<<<<<<< HEAD
-French:172.16.145.249:4065:a
-=======
-French:127.0.0.1:4065:a
->>>>>>> branch 'Kelli' of https://github.com/nwoch/CChat.git
+French:172.16.145.249:4065:ivuqvby
 Geology:127.0.0.1:4066:5dsfg4h
 German:127.0.0.1:4067:b
 History:127.0.0.1:4068:re74fd1v
