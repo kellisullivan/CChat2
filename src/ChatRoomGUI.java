@@ -11,7 +11,8 @@ import java.util.Scanner;
 
 import javax.swing.SwingConstants;
 
-import com.sun.glass.events.KeyEvent;
+//import com.sun.glass.events.KeyEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JTextPane;
 import java.awt.TextArea;
