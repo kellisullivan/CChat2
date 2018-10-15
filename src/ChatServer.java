@@ -172,7 +172,7 @@ public class ChatServer extends Server {
 		int grPort = Integer.parseInt(args[3]);
 		ChatServer chatserver = new ChatServer();
 		chatserver.connectToGroupRouter(groupRouterIP, grPort);
-		chatserver.listenConnect(csIP, csPort);
+		chatserver.listenConnect(csIP, 10, csPort);
 		
 		
 	}

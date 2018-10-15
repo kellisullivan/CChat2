@@ -2,12 +2,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import java.awt.event.KeyEvent;
 
 
 
@@ -29,6 +32,7 @@ public class Welcome extends Thread{
 		frame.getContentPane().setLayout(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		getGUI();
+		Button welcomeButton = new Button(usernameInput, groupnameInput, passwordInput);
 		frame.setVisible(true);
 	}
 	
@@ -100,12 +104,17 @@ public class Welcome extends Thread{
 			private WrongInfo passwordError;
 
 			public void actionPerformed(ActionEvent e) {
+				String[] tokens = null;	
+				tokens = usernameInput.getText().split("\\s+");
 				if (usernameInput.getText().isEmpty()) {
 					System.out.println("made it");
 					frame.dispose();
 					System.out.println("made it here");
 					usernameError = new WrongInfo("No username was inputed");
 					//System.exit(0);
+				}
+				else if(tokens.length > 1) {
+					WrongInfo username = new WrongInfo("You can only have a single word for your username.");
 				}
 				else if (groupnameInput.getText().isEmpty()) {
 					frame.dispose();
@@ -136,4 +145,73 @@ public class Welcome extends Thread{
 		return finished;
 	}
 
+	
+	public class Button implements KeyListener{
+		
+		private WrongInfo usernameError;
+		private WrongInfo groupnameError;
+		private WrongInfo passwordError;
+		private JTextField username;
+		private JTextField groupname;
+		private JTextField password;
+		
+		
+		public Button(JTextField usernameInfo, JTextField groupnameInfo, JTextField passwordInfo) {
+			usernameInfo.addKeyListener(this);
+			groupnameInfo.addKeyListener(this);
+			passwordInfo.addKeyListener(this);
+			username = usernameInfo;
+			groupname = groupnameInfo;
+			password = passwordInfo;
+		}
+		
+		
+		public void keyTyped(java.awt.event.KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(java.awt.event.KeyEvent e) {
+			if(e.getKeyCode() == KeyEvent.VK_ENTER){
+
+				String[] tokens = null;	
+				tokens = username.getText().split("\\s+");
+				if (username.getText().isEmpty()) {
+					frame.dispose();
+					System.out.println("made it here");
+					usernameError = new WrongInfo("No username was inputed");
+					//System.exit(0);
+				}
+				else if(tokens.length > 1) {
+					WrongInfo username = new WrongInfo("You can only have a single word for your username.");
+				}
+				else if (groupname.getText().isEmpty()) {
+					frame.dispose();
+					groupnameError = new WrongInfo("No group name was inputed");
+					//System.exit(0);
+				}
+				else if (password.getText().isEmpty()) {
+					frame.dispose();
+					passwordError = new WrongInfo("No password was inputed");
+					//System.exit(0);
+				}
+				else {
+					info[0] = username.getText();
+					info[1] = groupname.getText();
+					info[2] = password.getText();
+					finished = true;
+					frame.dispose();
+				}
+			
+			    }
+			
+		}
+
+		@Override
+		public void keyReleased(java.awt.event.KeyEvent e) {
+			// TODO Auto-generated method stub
+		}
+		
+	}
 }

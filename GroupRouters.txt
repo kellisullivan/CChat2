@@ -1,40 +1,33 @@
-Anthropology:127.0.0.1:4050:erhsdagsrh
-Art:127.0.0.1:4051:sbersgebfc
-Asian Studies:127.0.0.1:4052:egergj545455
-Chemistry and Biochemistry:127.0.0.1:4053:wgtasdfavdbggh
-Classics:127.0.0.1:4054:hsrth5th2s2ae4
-Classics-English:127.0.0.1:4055:wtege1351
-Classics-History-Politics:127.0.0.1:4056:etyrh541
-Comparative Literature:127.0.0.1:4057:484512efggge
-Computer Science:127.0.0.1:4058:regn4y5t5
-Economics and Business:127.0.0.1:4059:j7y84f1fb
-Education:127.0.0.1:4060:u784gr5df1b
-English:127.0.0.1:4061:78te4fd
-Environmental Studies Program:127.0.0.1:4062:we7\f541
-Feminist & Gender Studies:127.0.0.1:4063:7erf4d1v
-Film and Media Studies:127.0.0.1:4064:k4ijuyht5g1f
+Anthropology:894.7.7.8:1727:obthuz
+Art:894.7.7.8:1728:wlyzwljapcl
+AsianStudies:894.7.7.8:1729:jhsspnyhwof
+Chemistry:894.7.7.8:1720:tvsljbsl
+Classics:894.7.7.8:1721:ohklz
+ComparativeLit:894.7.7.8:1724:huhsfzpz
+CompSci:849.83.817.59:1755:qhch
+Economics:894.7.7.8:1726:puclzatlua
+Education:894.7.7.8:1737:zjovvs
+English:894.7.7.8:1738:zohrlzwlhyl
+EnvironmentalStudies:894.7.7.8:1739:uhabyl
+FemGen:894.7.7.8:1730:lxbhspaf
+Film:894.7.7.8:1731:kvjbtluahyf
 French:894.7.7.8:1732:ivuqvby
-Geology:127.0.0.1:4066:5dsfg4h
-German:127.0.0.1:4067:b
-History:127.0.0.1:4068:re74fd1v
-History-Philosophy:127.0.0.1:4069:4efwe4frg
-History-Political Science:127.0.0.1:4070:4jhygt5f5fe
-International Political Economy:127.0.0.1:4071:a5s4deaws6
-Italian:127.0.0.1:4072:c
-Mathematical Economics:127.0.0.1:4073:e2rw1fdc54
-Mathematics:127.0.0.1:4074:x78bf4dgtr1
-Molecular Biology:127.0.0.1:4075:afh4tsr541
-Music:127.0.0.1:4076:e46faef5af1
-Neuroscience:127.0.0.1:4077:45b1gfbdr
-Organismal Biology and Ecology:127.0.0.1:4078:145dfgrger1
-Philosophy:127.0.0.1:4079:gh4tegsrg51
-Physics:127.0.0.1:4080:4gh99efe1sfgh
-Political Science:127.0.0.1:4081:4wgre1gf5gf
-Psychology:127.0.0.1:4050:874gbreg5g15
-Race, Ethnicity, and Migratation Studies:127.0.0.1:4082:8r7g4b1d25r
-Religion:127.0.0.1:4083:1weg4df5bdf1b4
-Russian and Eurasian Studies:127.0.0.1:4084:e8ggs1dvb1
-Sociology:127.0.0.1:4085:v214re8ger5h1eh
-Southwest Studies:127.0.0.1:4086:qwfegr15b5b
-Spanish and Portuguese:127.0.0.1:4087:5921vf5bb
-Theatre and Dance:127.0.0.1:4088:vb151b21g2b1gd
+Geology:894.7.7.8:1733:ihzhsa
+German:894.7.7.8:1734:tbupjo
+History:894.7.7.8:1735:kljshyhapvu
+Italian:894.7.7.8:1749:kbvtv
+Math:849.83.804.54:3777:klypchapcl
+Biology:894.7.7.8:1742:tpavjovukyph
+Music:894.7.7.8:1743:aylisl
+Neuro:894.7.7.8:1744:opwwvjhtwbz
+Philosophy:894.7.7.8:1746:hypzavasl
+Physics:849.83.812.916:1732:mypjapvu
+PoliSci:894.7.7.8:1758:kltvjyhjf
+Psychology:894.7.7.8:2777:ilohcpvy
+REM:894.7.7.8:1759:kpclyzl
+Religion:894.7.7.8:1750:mhpao
+Russian:894.7.7.8:1751:wbapu
+Sociology:894.7.7.8:1752:zvjplaf
+SouthwestStudies:894.7.7.8:1753:uhchqv
+Spanish:894.7.7.8:1754:jhilgh
+Theatre:894.7.7.8:1755:wlymvythujl
