@@ -13,28 +13,26 @@ import java.util.Scanner;
 
 public class Client {
 	
-	private static volatile String username;
-	private static volatile String groupname;
-	private static volatile String password;
-	private static volatile String initialize = "INIT ";
-	private static volatile String identification = "IDNT \n";
-	private static volatile ChatRoomGUI chatroom;
+	private static String username;
+	private static String groupname;
+	private static String password;
+	private static String initialize = "INIT ";
+	private static String identification = "IDNT \n";
+	private static ChatRoomGUI chatroom;
 	private static volatile boolean done;
 	private static volatile boolean left;
-	private volatile String grIPAddress;
-	private volatile int grPort;
 
 
 	
-	public void openCentralServerSocket() throws IOException, UnsupportedEncodingException{
+	public static void openCentralServerSocket() throws IOException, UnsupportedEncodingException{
 	    Socket sock;
 	    InetAddress server_address;
 	    InetSocketAddress endpoint;
 
 	
 	    // Setup the server side connection data
-	    server_address = InetAddress.getByName("127.0.0.1");
-	    endpoint = new InetSocketAddress(server_address, 13306);
+	    server_address = InetAddress.getByName("172.16.136.199");
+	    endpoint = new InetSocketAddress(server_address, 2020);
 	    sock = new Socket();
 	
 
@@ -62,11 +60,11 @@ public class Client {
 			tokens = message.split("\\s+");
 	    }
 		if (tokens[0].equals("ACPT")) {
-			grIPAddress = tokens[1];
-			grPort = Integer.parseInt(tokens[2]);
-			groupRouterSocket(grIPAddress, grPort);
-			System.err.println(grIPAddress);
-			System.err.println(grPort);
+			String ipAddress = tokens[1];
+			int port = Integer.parseInt(tokens[2]);
+			groupRouterSocket(ipAddress, port);
+			System.err.println(ipAddress);
+			System.err.println(port);
 		}
 		else if (tokens[0].equals("DENY")) {
 			WrongInfo error = new WrongInfo("Group name  or Password was incorrect.");
@@ -79,7 +77,7 @@ public class Client {
     }
 	
 	
-	public void groupRouterSocket(String ipAddress, int port) throws IOException {
+	public static void groupRouterSocket(String ipAddress, int port) throws IOException {
 		
 		chatroom = new ChatRoomGUI(groupname, left);
 		System.err.println("read4");
@@ -138,7 +136,7 @@ public class Client {
 	    
 	}
 	
-	public void chatServerSock(String ipAddress, int port) throws IOException {
+	public static void chatServerSock(String ipAddress, int port) throws IOException {
 		System.err.println("CS");
 		Socket sock;
 	    InetAddress server_address;
@@ -164,7 +162,7 @@ public class Client {
 	    sock.getOutputStream().write(helloMessage.getBytes("US-ASCII"), 0, helloMessage.length());
 	    
 	    System.err.println("CS2");
-	    ReadClient read = new ReadClient(chatroom, sock, this);
+	    ReadClient read = new ReadClient(chatroom, sock);
 	    System.err.println("CS3");
 	    WriteClient write = new WriteClient(chatroom, sock, username);
 	    System.err.println("CS4");
@@ -179,14 +177,7 @@ public class Client {
 	}
 	
 	
-	public String getGrIPAddress() {
-		return grIPAddress;
-	}
 
-
-	public int getGrPort() {
-		return grPort;
-	}
 
 
 	
@@ -212,8 +203,6 @@ public class Client {
 		System.out.println("Groupname: " + groupname);
 		System.out.println("Password: " + password);
 		
-		Client client = new Client();
-		client.openCentralServerSocket();
+		openCentralServerSocket();
 	}
-
 }

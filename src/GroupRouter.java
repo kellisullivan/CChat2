@@ -30,7 +30,7 @@ public class GroupRouter extends Server {
 	}
 
 	@Override
-	public String read(Socket readSock) throws IOException {
+	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
 		//System.err.println("Reading");
 		// Wait for client's request and then write the request to server socket (send to server)
 		String csAddress;
@@ -48,10 +48,10 @@ public class GroupRouter extends Server {
 			}
 			if(prefix.equals(PING)) {
 				csAddress=counter + readSock.getInetAddress().getHostAddress().toString();
-				//csPort=readSock.getPort();
 				String[] tokens = message.split("\\s+");
 				int initialNumClients=0;
 				keyArray[0]= Integer.parseInt(tokens[1]);
+				System.err.println(tokens[1]);
 				System.err.println(csAddress);
 				keyArray[1]=initialNumClients;
 				chatServers.put(csAddress, keyArray);
@@ -81,7 +81,7 @@ public class GroupRouter extends Server {
 							System.err.println("port of chosen CS " + temp[0]);
 							System.err.println("clients in chosen CS " + temp[1]);
 							chatServers.replace(key, temp);
-							String messageTo= new String(ACPT + " " + chatServer[0] + " " + chatServer[1] + " " + '\n');
+							String messageTo= new String(ACPT + " " + chatServer[0] + " " + chatServer[1] + " " + System.getProperty("line.separator"));
 							System.err.println("Message is " + messageTo);
 							return messageTo;
 						}
@@ -89,13 +89,13 @@ public class GroupRouter extends Server {
 					min++;
 					System.err.println("min: " + min);
 				}
-				String messageTo=new String(DENY + " " + '\n');
+				String messageTo=new String(DENY + " " + System.getProperty("line.separator"));
 				System.err.println("Message is " + messageTo);
 				return messageTo;
 			}
 			if(prefix.equals(LEFT)) {
 				numberClients--;
-				message += " \n";
+				message += " " + System.getProperty("line.separator");
 				for(Socket sock:sockArray){
 					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);
@@ -103,7 +103,8 @@ public class GroupRouter extends Server {
 				return NULL;
 			}
 			if(prefix.equals(HELO)) {
-				message += " \n";
+				System.err.println("got message" + message);
+				message += " " + System.getProperty("line.separator");
 				for(Socket sock:sockArray){
 					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);
@@ -111,7 +112,7 @@ public class GroupRouter extends Server {
 				return NULL;
 			}
 			if(prefix.equals(FWRD)) {
-				message += " \n";
+				message += " " + System.getProperty("line.separator");
 				for(Socket sock:sockArray){
 					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);
@@ -126,17 +127,11 @@ public class GroupRouter extends Server {
 		return NULL;
 	}
 		@Override
-		public void write(Socket writeSock, String message) {
+		public void write(Socket writeSock, String message) throws IOException {
 			if (!message.equals(NULL)) {
 				System.err.println("Writing message: " + message);
 			}
-			try {
-				writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
-			} catch (IOException e) {
-				e.printStackTrace();
-				chatServers.remove(writeSock.getInetAddress().getHostAddress().toString());
-				sockArray.remove(writeSock);
-			}	
+			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());	
 			if (!message.equals(NULL)) {
 				System.err.print("just wrote");
 			}
@@ -144,8 +139,9 @@ public class GroupRouter extends Server {
 
 		public static void main(String[] args) throws IOException {
 			GroupRouter gr=new GroupRouter();
-			int port = Integer.parseInt(args[0]);
-			gr.listenConnect("127.0.0.1", port);
+			int port = Integer.parseInt(args[1]);
+			String ipAddress= new String(args[0]);
+			gr.listenConnect(ipAddress, port);
 		}
 
 	}
