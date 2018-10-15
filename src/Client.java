@@ -32,7 +32,7 @@ public class Client {
 	
 	    // Setup the server side connection data
 	    server_address = InetAddress.getByName("172.16.136.199");
-	    endpoint = new InetSocketAddress(server_address, 2020);
+	    endpoint = new InetSocketAddress(server_address, 2022);
 	    sock = new Socket();
 	
 

@@ -86,9 +86,18 @@ public class ChatRoomGUI {
 		btnSend.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String statement = textField.getText();
-					messageTyped = statement;
-					System.err.println("message: " + messageTyped + "\n");
-					textField.setText("");
+					if (statement.length() < 250 && !(statement.equals(""))) {
+						messageTyped = statement;
+						System.err.println("message: " + messageTyped + "\n");
+						textField.setText("");
+					}
+					else if(statement.equals("")) {
+						WrongInfo characterLimit = new WrongInfo("You didn't send any text in that message.");
+					}
+					else {
+						int overlimit = statement.length() - 250;
+						WrongInfo characterLimit = new WrongInfo("Your text had " + Integer.toString(overlimit) + " characters over the limit.");
+					}
 				}
 			});
 		
