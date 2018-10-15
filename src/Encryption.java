@@ -26,9 +26,11 @@ public class Encryption {
 			String[] tokens = currLine.split(":");
 			if (tokens[0].equals(groupName)) {
 				System.err.println(ipAddress);
-				//ipAddress = crypt.encrypt(ipAddress);
+				ipAddress = crypt.encrypt(ipAddress);
 				System.err.println(ipAddress);
-				//port = crypt.encrypt(port);
+				System.err.println(port);
+				port = crypt.encrypt(port);
+				System.err.println(port);
 				password = crypt.encrypt(password);
 				currLine = groupName + ":" + ipAddress + ":" + port + ":" + password;
 		        found = true;
