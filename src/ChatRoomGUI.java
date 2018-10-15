@@ -10,10 +10,14 @@ import java.awt.Font;
 import java.util.Scanner;
 
 import javax.swing.SwingConstants;
+
+import com.sun.glass.events.KeyEvent;
+
 import javax.swing.JTextPane;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.awt.Label;
 import javax.swing.JButton;
 
@@ -41,6 +45,7 @@ public class ChatRoomGUI {
 		    }
 		});
 		createGUI();
+		Button enterButton = new Button(textField);
 		frame.setVisible(true);
 	}
 	
@@ -112,5 +117,45 @@ public class ChatRoomGUI {
 	
 	public boolean left() {
 		return left;
+	}
+	
+
+	public class Button implements KeyListener{
+		
+		public Button(JTextField text) {
+			text.addKeyListener(this);
+		}
+		
+		
+		public void keyTyped(java.awt.event.KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(java.awt.event.KeyEvent e) {
+			if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					String statement = textField.getText();
+					if (statement.length() < 250 && !(statement.equals(""))) {
+						messageTyped = statement;
+						System.err.println("message: " + messageTyped + "\n");
+						textField.setText("");
+					}
+					else if(statement.equals("")) {
+						WrongInfo characterLimit = new WrongInfo("You didn't send any text in that message.");
+					}
+					else {
+						int overlimit = statement.length() - 250;
+						WrongInfo characterLimit = new WrongInfo("Your text had " + Integer.toString(overlimit) + " characters over the limit.");
+					}
+			    }
+			
+		}
+
+		@Override
+		public void keyReleased(java.awt.event.KeyEvent e) {
+			// TODO Auto-generated method stub
+		}
+		
 	}
 }

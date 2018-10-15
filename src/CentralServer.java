@@ -59,7 +59,7 @@ public class CentralServer extends Server {
 		CentralServer centralServer = new CentralServer();
 		String ipAddress = args[0];
 		int port = Integer.parseInt(args[1]);
-		centralServer.listenConnect(ipAddress, port);
+		centralServer.listenConnect(ipAddress, 20, port);
 	}
 
 }

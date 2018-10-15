@@ -120,6 +120,9 @@ public class ChatServer extends Server {
 				System.err.println("Client entered, must be forwarded to group router");
     			message = "LEFT " + tokens[1] + " " + tokens[2] + " " + System.getProperty("line.separator");
     			this.write(groupRouterSock, message);
+    			readSock.close();
+    			clientSockets.remove(readSock);
+    			toGroupRouter.update(clientSockets);
     			return NULL;
 			}
 			else if (prefix.equals("LEFT")) {
@@ -169,7 +172,7 @@ public class ChatServer extends Server {
 		int grPort = Integer.parseInt(args[3]);
 		ChatServer chatserver = new ChatServer();
 		chatserver.connectToGroupRouter(groupRouterIP, grPort);
-		chatserver.listenConnect(csIP, csPort);
+		chatserver.listenConnect(csIP, 10, csPort);
 		
 		
 	}

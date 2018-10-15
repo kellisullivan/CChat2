@@ -141,7 +141,7 @@ public class GroupRouter extends Server {
 			GroupRouter gr=new GroupRouter();
 			int port = Integer.parseInt(args[1]);
 			String ipAddress= new String(args[0]);
-			gr.listenConnect(ipAddress, port);
+			gr.listenConnect(ipAddress, 5, port);
 		}
 
 	}

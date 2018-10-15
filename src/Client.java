@@ -31,8 +31,8 @@ public class Client {
 
 	
 	    // Setup the server side connection data
-	    server_address = InetAddress.getByName("127.0.0.1");
-	    endpoint = new InetSocketAddress(server_address, 2048);
+	    server_address = InetAddress.getByName("172.16.136.199");
+	    endpoint = new InetSocketAddress(server_address, 2020);
 	    sock = new Socket();
 	
 
