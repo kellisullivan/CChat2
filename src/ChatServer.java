@@ -27,6 +27,11 @@ public class ChatServer extends Server {
 	public ChatServer() {
 
 	}
+	
+	public static void usage() {
+        System.err.println("Usage: java ChatServer <chat server address> <chat server port> <group router address <group router port> \n");
+        System.exit(1);
+    }
 
 	// Make a new connection to a server
 	private void connectToGroupRouter(String grIP, int port) {

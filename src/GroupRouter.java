@@ -28,6 +28,11 @@ public class GroupRouter extends Server {
 	
 	public GroupRouter() {
 	}
+	
+	public static void usage() {
+        System.err.println("Usage: java GroupRouter <group router address> <group router port> \n");
+        System.exit(1);
+    }
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {

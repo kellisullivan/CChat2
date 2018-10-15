@@ -13,6 +13,11 @@ public class CentralServer extends Server {
 		grTable = new GroupRoutersTable();
 		grTable.inputFileData();
 	}
+	
+	public static void usage() {
+        System.err.println("Usage: java CentralServer <central server address> <central server port> \n");
+        System.exit(1);
+    }
 
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
