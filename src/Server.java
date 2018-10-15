@@ -7,7 +7,7 @@ import java.net.Socket;
 public abstract class Server {
 
 	// Listen for new incoming connections
-	public void listenConnect(String ipAddress, int port, int allowedConnections) throws IOException {
+	public void listenConnect(String ipAddress, int allowedConnections, int port) throws IOException {
 		ServerSocket srvSock;
         InetAddress serverAddress;
         

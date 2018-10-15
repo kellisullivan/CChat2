@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import com.sun.glass.events.KeyEvent;
+import java.awt.event.KeyEvent;
 
 
 
