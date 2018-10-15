@@ -49,7 +49,7 @@ public class ChatServer extends Server {
 				return;
 			}
 			
-			String ping = "PING " + csPort + " \n";
+			String ping = "PING " + csPort + " " + System.getProperty("line.separator");
 			//Send group router the PING message as soon as it connects
 			System.err.println("About to write PING");
 			this.write(groupRouterSock, ping);
@@ -81,7 +81,7 @@ public class ChatServer extends Server {
 		
 		//Check if Client has disconnected
 		if (!readSock.isConnected()) {
-	    	  left += localIP + " \n";
+	    	  left += localIP + " " + System.getProperty("line.separator");
 	    	  //readSock.getOutputStream().write(left.getBytes("US-ASCII"),0,left.length());
 	    	  readSock.close();
 		}
@@ -101,29 +101,32 @@ public class ChatServer extends Server {
     		
 			if(prefix.equals("HIII")) {
 				System.err.println("Client entered, must be forwarded to group router");
-    			message = "HELO " + tokens[1] + " \n";
+    			message = "HELO " + tokens[1] + " " + System.getProperty("line.separator");
     			this.write(groupRouterSock, message);
     			System.err.println("I Wrote.");
     			return NULL;
 			}
 			else if (prefix.equals("HELO")) {
-				message += " \n";
+				message += " " + System.getProperty("line.separator");
             	System.err.println("Text to forward to Clients");
     			return message;
 			}
 			else if (prefix.equals("FWRD")) {
-            	message += " \n";
+            	message += " " + System.getProperty("line.separator");
             	System.err.println("Text to forward to Clients");
     			return message;
     		}
 			else if (prefix.equals("BYEE")) {
 				System.err.println("Client entered, must be forwarded to group router");
-    			message = "LEFT " + tokens[1] + " " + tokens[2] + " \n";
+    			message = "LEFT " + tokens[1] + " " + tokens[2] + " " + System.getProperty("line.separator");
     			this.write(groupRouterSock, message);
+    			readSock.close();
+    			clientSockets.remove(readSock);
+    			toGroupRouter.update(clientSockets);
     			return NULL;
 			}
 			else if (prefix.equals("LEFT")) {
-            	message += " \n";
+            	message += " " + System.getProperty("line.separator");
             	System.err.println("Client left, must be forwarded to Group Router");
     			return message;
     		}
@@ -169,7 +172,7 @@ public class ChatServer extends Server {
 		int grPort = Integer.parseInt(args[3]);
 		ChatServer chatserver = new ChatServer();
 		chatserver.connectToGroupRouter(groupRouterIP, grPort);
-		chatserver.listenConnect(csIP, csPort);
+		chatserver.listenConnect(csIP, 10, csPort);
 		
 		
 	}

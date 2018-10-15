@@ -31,8 +31,8 @@ public class Client {
 
 	
 	    // Setup the server side connection data
-	    server_address = InetAddress.getByName("127.0.0.1");
-	    endpoint = new InetSocketAddress(server_address, 13306);
+	    server_address = InetAddress.getByName("172.16.136.199");
+	    endpoint = new InetSocketAddress(server_address, 2020);
 	    sock = new Socket();
 	
 
@@ -45,7 +45,7 @@ public class Client {
 			return;
 	    }
 	    
-		String send = initialize + groupname + " " + password + " \n";
+		String send = initialize + groupname + " " + password + " " + System.getProperty("line.separator");
 		sock.getOutputStream().write(send.getBytes("US-ASCII"),0,send.length());
 		
 		

@@ -37,7 +37,7 @@ public class ChatRoomGUI {
 		    public void windowClosing(java.awt.event.WindowEvent e) {
 		    	left = true;
 		        e.getWindow().dispose();
-		        System.out.println("JFrame Closed!");
+
 		    }
 		});
 		createGUI();
@@ -95,15 +95,15 @@ public class ChatRoomGUI {
 	}
 	
 	public void addChat(String username, String message) {
-		chat.append(username +": " + message + "\n");
+		chat.append(username +": " + message + System.getProperty("line.separator"));
 	}
 	
 	public void addUser(String username) {
-		chat.append(username + "\n");
+		chat.append(username + System.getProperty("line.separator"));
 	}
 	
 	public void removeUser(String username) {
-		chat.append(username + "\n");
+		chat.append(username + System.getProperty("line.separator"));
 	}
 		
 	public String getMessage() {
