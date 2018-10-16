@@ -7,12 +7,11 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.*;
 
+//Group Router Class
 public class GroupRouter extends Server {
 
-	private byte[] rbuf;
-	int bytesRead;
 	volatile String message;
-	String prefix=new String();
+	String prefix;
 	String PING="PING";
 	HashMap<String,Integer[]> chatServers= new HashMap<String, Integer[]>();
 	int numberClients;
@@ -23,123 +22,99 @@ public class GroupRouter extends Server {
 	String DENY= "DENY";
 	String HELO= "HELO";
 	String NULL= "NULL \n";
-	private int counter;
 	private ArrayList<Socket> sockArray=new ArrayList<Socket>();
 	
-	public GroupRouter() {
-	}
-	
-	public static void usage() {
-        System.err.println("Usage: java GroupRouter <group router address> <group router port> \n");
-        System.exit(1);
-    }
-
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
-		//System.err.println("Reading");
-		// Wait for client's request and then write the request to server socket (send to server)
+		// Wait for client connection, respond appropriately to message/request
 		String csAddress;
-		int csPort;
 		Integer[] keyArray=new Integer[2];
 		InputStream stream = readSock.getInputStream();
 		Scanner scan = new Scanner(stream, "US-ASCII");
+		//read and parse message for prefix
 		while (scan.hasNextLine()) {
 			message = scan.nextLine();
-			System.err.println("Message recieved: " + message);
 			prefix=message.substring(0,4);
-			System.err.println("prefix is: " + prefix);
+			//Keep track of all sockets connecting Chat Servers and Group Routers
 			if(!sockArray.contains(readSock) && !prefix.equals(IDNT)) {
 				sockArray.add(readSock);
 			}
+			//Ping indicates Chat Server is attempting to connect 
 			if(prefix.equals(PING)) {
-				csAddress=counter + readSock.getInetAddress().getHostAddress().toString();
+				csAddress=readSock.getInetAddress().getHostAddress().toString();
 				String[] tokens = message.split("\\s+");
+				//Initial number of clients on a Chat Server is 0
 				int initialNumClients=0;
 				keyArray[0]= Integer.parseInt(tokens[1]);
-				System.err.println(tokens[1]);
-				System.err.println(csAddress);
 				keyArray[1]=initialNumClients;
+				//Store information about Chat Servers on hash map
 				chatServers.put(csAddress, keyArray);
-				System.err.println("Message is NULL");
-				counter++;
 				return NULL;
-				
 			}
+			//IDNT indicates client is trying to connect to a Chat Server
 			if(prefix.equals(IDNT)) {
 				Set<String> chatIPs;	
 				chatIPs=chatServers.keySet();
 				int min=0;
 				String[] chatServer=new String[2];
+				//Loop will make sure client is placed on Chat Server with least amount of clients
+				//Also makes sure max clients on each Chat Server is 10
 				while(min<10) {
 					for(String key: chatIPs) {
 						numberClients=chatServers.get(key)[1];
-						System.err.println("numberClients: " + numberClients);
-						System.err.println("min: " + min);
 						if (numberClients==min) {
-							chatServer[0]=key.substring(1, key.length()); 
-							System.err.println("key IP: " + chatServer[0]);
+							chatServer[0]=key; 
 							chatServer[1]=chatServers.get(key)[0].toString();
-							System.err.println("value port: " + chatServer[1]);
 							Integer[] temp = chatServers.get(key);
 							numberClients++;
 							temp[1] = numberClients;
-							System.err.println("port of chosen CS " + temp[0]);
-							System.err.println("clients in chosen CS " + temp[1]);
 							chatServers.replace(key, temp);
+							//Sends message with info for Chat Server to connect to
 							String messageTo= new String(ACPT + " " + chatServer[0] + " " + chatServer[1] + " " + System.getProperty("line.separator"));
-							System.err.println("Message is " + messageTo);
 							return messageTo;
 						}
 					}
 					min++;
-					System.err.println("min: " + min);
 				}
+				//DENY sent if all Chat Servers at max client capacity
 				String messageTo=new String(DENY + " " + System.getProperty("line.separator"));
-				System.err.println("Message is " + messageTo);
 				return messageTo;
 			}
+			//Lets all Chat Servers/Clients know when user has left the chat
 			if(prefix.equals(LEFT)) {
 				numberClients--;
 				message += " " + System.getProperty("line.separator");
 				for(Socket sock:sockArray){
-					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);
 				}
 				return NULL;
 			}
+			//Lets all Chat Servers/Clients know when user has entered chat
 			if(prefix.equals(HELO)) {
-				System.err.println("got message" + message);
 				message += " " + System.getProperty("line.separator");
 				for(Socket sock:sockArray){
-					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);
 				}
 				return NULL;
 			}
+			//FWRD message needs to be sent to all Chat Servers/clients
 			if(prefix.equals(FWRD)) {
 				message += " " + System.getProperty("line.separator");
 				for(Socket sock:sockArray){
-					System.err.println("Forwarding to " + sock);
 					this.write(sock, message);
 				}
 			}
+			//Null messages are handled 
 			if(prefix.equals(NULL)) {
-				System.err.println("Message is NULL");
 				return NULL;
 			}
 		}
-		//System.err.println("Incorrect message recieved, message is NULL");
 		return NULL;
 	}
 		@Override
+		//Write appropriate response for messages received
 		public void write(Socket writeSock, String message) throws IOException {
-			if (!message.equals(NULL)) {
-				System.err.println("Writing message: " + message);
-			}
 			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());	
-			if (!message.equals(NULL)) {
-				System.err.print("just wrote");
-			}
 		}
 
 		public static void main(String[] args) throws IOException {
