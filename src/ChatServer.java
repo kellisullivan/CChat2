@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+//ChatServer class for CChat
 public class ChatServer extends Server {
 	
 	private String[] tokens;
@@ -15,25 +16,16 @@ public class ChatServer extends Server {
 	private Socket groupRouterSock;
 	private InetAddress groupRouterAddress;
 	private InetSocketAddress endpoint;
-	private String localIP;
 	private ChatServerProcesses toGroupRouter;
-	private String left = "LEFT ";
 	private volatile ArrayList<Socket> clientSockets = new ArrayList<Socket>();
-	private static final String PING = "PING 7000 \n";
 	private static final String NULL = "NULL \n";
 	private static int csPort;
-	
 
-	public ChatServer() {
-
-	}
-
-	// Make a new connection to a server
+	// Make a new connection to a Group Router
 	private void connectToGroupRouter(String grIP, int port) {
 		try{
 			// Setup the server side connection data to Group Router
 			groupRouterAddress = InetAddress.getByName(grIP);
-
 			endpoint = new InetSocketAddress(groupRouterAddress, port);
 
 			//Make a TCP connection 
@@ -42,24 +34,20 @@ public class ChatServer extends Server {
 			// Make the connection
 			try {
 				groupRouterSock.connect(endpoint);
-				System.err.println("Connected");
 			} catch(ConnectException e) {
 				System.err.println("Cannot connect to server.");
 				System.exit(1);
 				return;
 			}
 			
+			//Send PING message to give group router necessary info
 			String ping = "PING " + csPort + " " + System.getProperty("line.separator");
-			//Send group router the PING message as soon as it connects
-			System.err.println("About to write PING");
 			this.write(groupRouterSock, ping);
-			System.err.println("PING written");
-			System.err.println("About to read response");
 			this.read(groupRouterSock);
-			System.err.println("About to start new thread");
+			
+			//Start new thread the infinitely reads and writes from Group Router
 			toGroupRouter = new ChatServerProcesses(this, groupRouterSock, clientSockets);
 			toGroupRouter.start();
-			System.err.println("Thread started");
 		}
 		catch(Exception e) {
 			System.err.println("Cannot connect to server.");
@@ -68,56 +56,49 @@ public class ChatServer extends Server {
 		}
 	}
 
+	//Overrides Server's read method, telling what a read for a Chat Server should do
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
 		
-		//Grab and store Client's sockets
+		//Grab and store Client sockets' info 
 		if((!clientSockets.contains(readSock)) && readSock.getPort() != groupRouterSock.getPort()) {
-			System.err.println(readSock.getPort());
-			System.err.println("true");
 			clientSockets.add(readSock);
 			toGroupRouter.update(clientSockets);
 		}
 		
-		//Check if Client has disconnected
+		//Check if other end has disconnected, if so close Chat Server side of connection
 		if (!readSock.isConnected()) {
-	    	  left += localIP + " " + System.getProperty("line.separator");
-	    	  //readSock.getOutputStream().write(left.getBytes("US-ASCII"),0,left.length());
 	    	  readSock.close();
 		}
-		// Wait for client's request and then write the request to server socket (send to server)
-		//System.err.println("about to read");
+		
+		//Gram newest message
 		InputStream stream = readSock.getInputStream();
-		//System.err.println("stream");
 		Scanner scan = new Scanner(stream, "US-ASCII");
 		String message;
 		String prefix;
 		while (scan.hasNextLine()) {
-			System.err.println(".");
 			message = scan.nextLine();
-			System.err.println("read: " + message);
 			tokens = message.split("\\s+");
 			prefix = tokens[0];
     		
+			//Forward HIII messages to Group Router
 			if(prefix.equals("HIII")) {
-				System.err.println("Client entered, must be forwarded to group router");
     			message = "HELO " + tokens[1] + " " + System.getProperty("line.separator");
     			this.write(groupRouterSock, message);
-    			System.err.println("I Wrote.");
     			return NULL;
 			}
+			//Return HELO messages to other end
 			else if (prefix.equals("HELO")) {
 				message += " " + System.getProperty("line.separator");
-            	System.err.println("Text to forward to Clients");
     			return message;
 			}
+			//Return FWRD messages to other end
 			else if (prefix.equals("FWRD")) {
             	message += " " + System.getProperty("line.separator");
-            	System.err.println("Text to forward to Clients");
     			return message;
     		}
+			//Send left messages to Group Router, update list of Client sockets to tell that Client has left.
 			else if (prefix.equals("BYEE")) {
-				System.err.println("Client entered, must be forwarded to group router");
     			message = "LEFT " + tokens[1] + " " + tokens[2] + " " + System.getProperty("line.separator");
     			this.write(groupRouterSock, message);
     			readSock.close();
@@ -125,13 +106,13 @@ public class ChatServer extends Server {
     			toGroupRouter.update(clientSockets);
     			return NULL;
 			}
+			//Return LEFT messages to other end
 			else if (prefix.equals("LEFT")) {
             	message += " " + System.getProperty("line.separator");
-            	System.err.println("Client left, must be forwarded to Group Router");
     			return message;
     		}
+			//Turn TEXT messages into FWRD messages and send to Group Router
             else if (prefix.equals("TEXT")) {
-    			System.err.println("Client sent this message, must be forwarded to Group Router");
     			tokens = message.split(" ");
     			username = tokens[1];
     			message = "FWRD "+username+ " ";
@@ -142,36 +123,42 @@ public class ChatServer extends Server {
     			this.write(groupRouterSock, message);
     			return NULL;
     		}
+			//Return NULL messages if nulls are received
             else if (prefix.equals("NULL")) {
-    			System.err.println("Group Router recieved a PING or LEFT message.");
     			return NULL;
     		}
+			//If the message can't be understood, exit
             else{
-            	System.err.println("Chat server recieved a message it shouldn't have: " + message);
+            	System.err.println("Incorrect message received");
             	System.exit(1);
             }
             
     	}
-		//System.err.println("return");
+		//Must return null so method works
 		return NULL;
 		
 	}
 
+	//Write method the overrides the Server class's write method
 	@Override
 	public void write(Socket writeSock, String message) throws IOException {
+		//Write the message to the socket as long as the message is not a FWRD or NULL message
 		if (!message.substring(0,4).equals("NULL") || !message.substring(0,4).equals("FWRD")) {
-			System.err.println("message:" + message);
 			writeSock.getOutputStream().write(message.getBytes("US-ASCII"),0,message.length());
 		}
 	}
-
+	
+	//Main that runs when ChatServer is started
 	public static void main(String[] args) throws IOException {
+		//Grab command line input (first argument is ChatServer's IP, second is ChatServer's port, third is Group Router's IP, and fourth one is Group Router's port)
 		String csIP = args[0];
 		csPort = Integer.parseInt(args[1]);
 		String groupRouterIP = args[2];
 		int grPort = Integer.parseInt(args[3]);
 		ChatServer chatserver = new ChatServer();
+		//Connect to the group router
 		chatserver.connectToGroupRouter(groupRouterIP, grPort);
+		//Infinitely read and write to Client
 		chatserver.listenConnect(csIP, 10, csPort);
 		
 		
