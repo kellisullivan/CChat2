@@ -1,3 +1,4 @@
+// Class that defines a GroupRouterID object containing a Group Router's encrypted IP address, port, and password
 
 public class GroupRouterID {
 	
