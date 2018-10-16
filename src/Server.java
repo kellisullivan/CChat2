@@ -1,3 +1,7 @@
+// Abstract class that defines a method, utilized by all servers, for opening a listening socket 
+// and creating a read/write thread for each new connection,
+// and declares read and write methods implemented by each server subclass and called by the thread in listenConnect
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -6,15 +10,13 @@ import java.net.Socket;
 
 public abstract class Server {
 
-	// Listen for new incoming connections
+	// Listen for new incoming connections 
+	// and create thread for each new connection which reads from and writes to the listening socket
 	public void listenConnect(String ipAddress, int allowedConnections, int port) throws IOException {
 		ServerSocket srvSock;
         InetAddress serverAddress;
-        
-        // Setup the server side connection data
+    
         serverAddress = InetAddress.getByName(ipAddress);
-       
-        // Make the server socket with a maximum queue of 20 connections
 		srvSock = new ServerSocket(port, allowedConnections, serverAddress);
 		
         // Read and handle connections forever
@@ -25,10 +27,10 @@ public abstract class Server {
         }	
 	}
 	
-	// Read message from socket and parse
+	// Read message from socket, parse, and compile new message to be sent
 	public abstract String read(Socket readSock) throws UnsupportedEncodingException, IOException;
 	
-	// Compile message and write to socket
+	// Write message to socket
 	public abstract void write(Socket writeSock, String message) throws IOException;
 	
 }
