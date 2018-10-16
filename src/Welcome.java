@@ -13,7 +13,8 @@ import javax.swing.SwingConstants;
 import java.awt.event.KeyEvent;
 
 
-
+//this GUI will be displayed initially to the client so they can
+//input their user name and the group name and password of the major group chat they are trying to enter
 public class Welcome extends Thread{
 	JFrame frame;
 	JTextField usernameInput;
@@ -23,6 +24,7 @@ public class Welcome extends Thread{
 	volatile Boolean finished;
 
 
+	//takes in a boolean that will be used to know when the client has finished inputing the information 
 	public Welcome(boolean isDone) throws InterruptedException {
 		finished = isDone;
 		frame = new JFrame();
@@ -32,10 +34,14 @@ public class Welcome extends Thread{
 		frame.getContentPane().setLayout(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		getGUI();
+		//button used to listen for the enter key
 		Button welcomeButton = new Button(usernameInput, groupnameInput, passwordInput);
 		frame.setVisible(true);
 	}
 	
+	//creates the GUI, mostly done with a eclipse accessory and is just making the GUI
+	//look engaging and providing three text fields that users will input the various
+	//information we are looking to get from the client
 	public void getGUI() {
 		JLabel lblWelcomeToCchat = new JLabel("Welcome to CChat!");
 		lblWelcomeToCchat.setVisible(true);
@@ -92,6 +98,8 @@ public class Welcome extends Thread{
 		frame.getContentPane().add(passwordInput);
 
 		
+		//if the user presses the continue button we want to update the information into 
+		//an array that our client file can get later to send to the central server
 		JButton btnContinue = new JButton("CONTINUE");
 		btnContinue.setBackground(Color.YELLOW);
 		btnContinue.setForeground(Color.BLACK);
@@ -104,32 +112,31 @@ public class Welcome extends Thread{
 			private WrongInfo passwordError;
 
 			public void actionPerformed(ActionEvent e) {
+				//break up the user to make sure they only put a single word for their user name
 				String[] tokens = null;	
 				tokens = usernameInput.getText().split("\\s+");
+				
+				//check that they inputed something for this text box
 				if (usernameInput.getText().isEmpty()) {
-					System.out.println("made it");
-					frame.dispose();
-					System.out.println("made it here");
 					usernameError = new WrongInfo("No username was inputed");
-					//System.exit(0);
 				}
 				else if(tokens.length > 1) {
 					WrongInfo username = new WrongInfo("You can only have a single word for your username.");
 				}
+				//check that they inputed something for this text box
 				else if (groupnameInput.getText().isEmpty()) {
-					frame.dispose();
 					groupnameError = new WrongInfo("No group name was inputed");
-					//System.exit(0);
 				}
+				//check that they inputed something for this text box
 				else if (passwordInput.getText().isEmpty()) {
-					frame.dispose();
 					passwordError = new WrongInfo("No password was inputed");
-					//System.exit(0);
 				}
+				//if they inputed correct things then update the info array so the client can get this information
 				else {
 					info[0] = usernameInput.getText();
 					info[1] = groupnameInput.getText();
 					info[2] = passwordInput.getText();
+					//update the boolean so the client knows we are finished
 					finished = true;
 					frame.dispose();
 				}
@@ -137,10 +144,12 @@ public class Welcome extends Thread{
 		});
 	}
 	
+	//return the info array that contains the text the user entered
 	public String[] getInfo() {
 		return info;
 	}
 	
+	//return the boolean that will say whether the client is finished updating the GUI
 	public boolean done() {
 		return finished;
 	}
@@ -155,7 +164,8 @@ public class Welcome extends Thread{
 		private JTextField groupname;
 		private JTextField password;
 		
-		
+		//listen for a button to be pressed and take what is in the text fields the user
+		//can write the various inputs we require
 		public Button(JTextField usernameInfo, JTextField groupnameInfo, JTextField passwordInfo) {
 			usernameInfo.addKeyListener(this);
 			groupnameInfo.addKeyListener(this);
@@ -171,40 +181,40 @@ public class Welcome extends Thread{
 			
 		}
 
-		@Override
+		//if the enter button is pressed read in the text field to get the informations from the text field
 		public void keyPressed(java.awt.event.KeyEvent e) {
 			if(e.getKeyCode() == KeyEvent.VK_ENTER){
 
+				//break up the user to make sure they only put a single word for their user name
 				String[] tokens = null;	
-				tokens = username.getText().split("\\s+");
-				if (username.getText().isEmpty()) {
-					frame.dispose();
-					System.out.println("made it here");
+				tokens = usernameInput.getText().split("\\s+");
+				
+				//check that they inputed something for this text box
+				if (usernameInput.getText().isEmpty()) {
 					usernameError = new WrongInfo("No username was inputed");
-					//System.exit(0);
 				}
 				else if(tokens.length > 1) {
 					WrongInfo username = new WrongInfo("You can only have a single word for your username.");
 				}
-				else if (groupname.getText().isEmpty()) {
-					frame.dispose();
+				//check that they inputed something for this text box
+				else if (groupnameInput.getText().isEmpty()) {
 					groupnameError = new WrongInfo("No group name was inputed");
-					//System.exit(0);
 				}
-				else if (password.getText().isEmpty()) {
-					frame.dispose();
+				//check that they inputed something for this text box
+				else if (passwordInput.getText().isEmpty()) {
 					passwordError = new WrongInfo("No password was inputed");
-					//System.exit(0);
 				}
+				//if they inputed correct things then update the info array so the client can get this information
 				else {
-					info[0] = username.getText();
-					info[1] = groupname.getText();
-					info[2] = password.getText();
+					info[0] = usernameInput.getText();
+					info[1] = groupnameInput.getText();
+					info[2] = passwordInput.getText();
+					//update the boolean so the client knows we are finished
 					finished = true;
 					frame.dispose();
 				}
 			
-			    }
+			}
 			
 		}
 
