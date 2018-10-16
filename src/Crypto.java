@@ -20,6 +20,8 @@ public class Crypto {
                 c[i] = (char)(((c[i]-'a')+rotation)%26 + 'a');
             } else if('A'<=c[i] && 'Z'>=c[i]) {
                 c[i] = (char)(((c[i]-'A')+rotation)%26 + 'A');
+            } else if((48 <= c[i] && 57 >= c[i])) {
+            	c[i] = (char) (((c[i]- '0')+rotation)%10 + '0');
             }
         }
         return new String(c);
@@ -36,21 +38,10 @@ public class Crypto {
                 c[i] = (char)(((c[i]-'a')-rotation+26)%26 + 'a');
             } else if('A'<=c[i] && 'Z'>=c[i]) {
                 c[i] = (char)(((c[i]-'A')-rotation+26)%26 + 'A');
+            } else if((48 <= c[i] && 57 >= c[i])) {
+            	c[i] = (char) (((c[i]- '0')-rotation+30)%10 + '0');
             }
         }
         return new String(c);
-    }
-    
-    public static void main(String[] args) {
-        System.out.println("Making crypto with key 13");
-        Crypto c = new Crypto(13);
-        String plain = "Hello! Yay!";
-        String cypher;
-        System.out.println("Encrypting: "+plain);
-        cypher = c.encrypt(plain);
-        System.out.println("Got: "+cypher);
-        System.out.println("Decrypting: "+cypher);
-        plain = c.decrypt(cypher);
-        System.out.println("Got: "+plain);
     }
 }
