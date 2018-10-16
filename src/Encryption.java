@@ -1,3 +1,5 @@
+// Class that encrypts Group Router IP addresses, ports, and passwords and adds them to a text file
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,21 +16,21 @@ public class Encryption {
 	private static void addToFile(String groupName, String ipAddress, String port, String password) throws IOException {
 		Crypto crypt = new Crypto(7);
 		File grFile = new File("GroupRouters.txt");
+		
 		if (!grFile.exists()) {
 			grFile.createNewFile();
 		}
-		
 		Boolean found = false;
 		StringBuffer sbuf = new StringBuffer();
 		Scanner scan = new Scanner(grFile);
+		
 		while (scan.hasNextLine()) {
 			String currLine = scan.nextLine();
 			String[] tokens = currLine.split(":");
+			
 			if (tokens[0].equals(groupName)) {
-				System.err.println(ipAddress);
-				//ipAddress = crypt.encrypt(ipAddress);
-				System.err.println(ipAddress);
-				//port = crypt.encrypt(port);
+				ipAddress = crypt.encrypt(ipAddress);
+				port = crypt.encrypt(port);
 				password = crypt.encrypt(password);
 				currLine = groupName + ":" + ipAddress + ":" + port + ":" + password;
 		        found = true;
@@ -36,6 +38,7 @@ public class Encryption {
 			}
             sbuf.append(currLine + '\n');
 		}
+		
 		if (found == false) {
 			System.err.println("ERROR: The group name you entered does not exist. "
 					+ "Please add it to GroupRouters.txt with the correct IP address and port before trying again.");
@@ -57,6 +60,7 @@ public class Encryption {
 		String ipAddress = args[1];
 		String port = args[2];
 		String password = args[3];	
+		
 		try {
 			addToFile(groupName, ipAddress, port, password);
 		} catch (IOException e) {
