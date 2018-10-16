@@ -24,6 +24,11 @@ public class GroupRouter extends Server {
 	String NULL= "NULL \n";
 	private ArrayList<Socket> sockArray=new ArrayList<Socket>();
 	
+	public static void usage() {
+        System.err.println("Usage: java GroupRouter <group router address> <group router port> \n");
+        System.exit(1);
+    }
+	
 	@Override
 	public String read(Socket readSock) throws UnsupportedEncodingException, IOException {
 		// Wait for client connection, respond appropriately to message/request
@@ -118,9 +123,29 @@ public class GroupRouter extends Server {
 		}
 
 		public static void main(String[] args) throws IOException {
-			GroupRouter gr=new GroupRouter();
+			// Must have 2 arguments 
+	        if (args.length!=2) {
+	            usage();
+	            System.exit(1);
+	        }
+	  
+	        // IP address must follow proper format
+	        String ipAddress= args[0];
+			if (!ipAddress.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
+				usage();
+	            System.err.println("ERROR: IP Address " + ipAddress + " is not valid");
+	            System.exit(1);
+	        }
+			
+			// Port must be within appropriate range
 			int port = Integer.parseInt(args[1]);
-			String ipAddress= new String(args[0]);
+	        if (port <= 0 || port > 65535) {
+	        	usage();
+	            System.err.println("ERROR: Port " + port + " is not valid");
+	            System.exit(1);
+	        }
+	        
+			GroupRouter gr=new GroupRouter();
 			gr.listenConnect(ipAddress, 5, port);
 		}
 

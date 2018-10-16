@@ -62,9 +62,29 @@ public class CentralServer extends Server {
 	}
 
 	public static void main(String[] args) throws IOException {
-		CentralServer centralServer = new CentralServer();
-		String ipAddress = args[0];
+		// Must have 2 arguments 
+        if (args.length!=2) {
+            usage();
+            System.exit(1);
+        }
+  
+        // IP address must follow proper format
+        String ipAddress = args[0];
+		if (!ipAddress.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
+			usage();
+            System.err.println("ERROR: IP Address " + ipAddress + " is not valid");
+            System.exit(1);
+        }
+		
+		// Port must be within appropriate range
 		int port = Integer.parseInt(args[1]);
+        if (port <= 0 || port > 65535) {
+        	usage();
+            System.err.println("ERROR: Port " + port + " is not valid");
+            System.exit(1);
+        }
+  
+        CentralServer centralServer = new CentralServer();
 		centralServer.listenConnect(ipAddress, 20, port);
 	}
 

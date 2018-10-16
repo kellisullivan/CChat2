@@ -20,6 +20,11 @@ public class ChatServer extends Server {
 	private volatile ArrayList<Socket> clientSockets = new ArrayList<Socket>();
 	private static final String NULL = "NULL \n";
 	private static int csPort;
+	
+	public static void usage() {
+        System.err.println("Usage: java ChatServer <chat server address> <chat server port> <group router address <group router port> \n");
+        System.exit(1);
+    }
 
 	// Make a new connection to a Group Router
 	private void connectToGroupRouter(String grIP, int port) {
@@ -150,11 +155,30 @@ public class ChatServer extends Server {
 	
 	//Main that runs when ChatServer is started
 	public static void main(String[] args) throws IOException {
-		//Grab command line input (first argument is ChatServer's IP, second is ChatServer's port, third is Group Router's IP, and fourth one is Group Router's port)
-		String csIP = args[0];
-		csPort = Integer.parseInt(args[1]);
+		// Must have 4 arguments 
+        if (args.length!=4) {
+            usage();
+            System.exit(1);
+        }
+  
+        // IP addresses must follow proper format
+        String csIP = args[0];
 		String groupRouterIP = args[2];
+		if (!csIP.matches("\\d+\\.\\d+\\.\\d+\\.\\d+") || !groupRouterIP.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
+			usage();
+            System.err.println("ERROR: IP Address is not valid");
+            System.exit(1);
+        }
+		
+		// Ports must be within appropriate range
+		csPort = Integer.parseInt(args[1]);
 		int grPort = Integer.parseInt(args[3]);
+        if (csPort <= 0 || csPort > 65535 || grPort <= 0 || grPort > 65535) {
+        	usage();
+            System.err.println("ERROR: Port is not valid");
+            System.exit(1);
+        }
+ 
 		ChatServer chatserver = new ChatServer();
 		//Connect to the group router
 		chatserver.connectToGroupRouter(groupRouterIP, grPort);
