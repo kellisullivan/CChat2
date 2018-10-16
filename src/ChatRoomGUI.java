@@ -1,25 +1,15 @@
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-import java.awt.BorderLayout;
 import javax.swing.JTextArea;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-
 import java.awt.Font;
-import java.util.Scanner;
-
 import javax.swing.SwingConstants;
-
-//import com.sun.glass.events.KeyEvent;
 import java.awt.event.KeyEvent;
-
-import javax.swing.JTextPane;
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
-import java.awt.Label;
 import javax.swing.JButton;
 
 public class ChatRoomGUI {

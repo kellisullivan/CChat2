@@ -3,13 +3,9 @@ import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
-import java.awt.event.KeyEvent;
 
 public class WrongInfo {
 	

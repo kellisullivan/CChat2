@@ -1,3 +1,5 @@
+// Class that defines a HashMap which stores group chat names as keys and GroupRouterID objects as values
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -5,8 +7,10 @@ import java.util.Scanner;
 
 public class GroupRoutersTable {
 	
-	HashMap<String, GroupRouterID> GroupRouterMap;
-	Crypto crypt;
+	private HashMap<String, GroupRouterID> GroupRouterMap;
+	private Crypto crypt;
+	private static final String ACPT = "ACPT ";
+	private static final String DENY = "DENY \n";
 	
 	public GroupRoutersTable() {
 		GroupRouterMap = new HashMap<String, GroupRouterID>();
@@ -37,10 +41,10 @@ public class GroupRoutersTable {
 			GroupRouterID chosenGR = GroupRouterMap.get(groupname);
 			String decryptedPass = crypt.decrypt(chosenGR.getPassword());
 			if (password.equals(decryptedPass)) {
-				return "ACPT " + crypt.decrypt(chosenGR.getIPAddress()) + " " + crypt.decrypt(chosenGR.getPort()) + " \n";
+				return ACPT + crypt.decrypt(chosenGR.getIPAddress()) + " " + crypt.decrypt(chosenGR.getPort()) + " \n";
 			}
 		}
-		return "DENY \n";
+		return DENY;
 	}
 	
 }

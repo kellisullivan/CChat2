@@ -91,7 +91,7 @@ public class ChatServer extends Server {
 	    	  readSock.close();
 		}
 		// Wait for client's request and then write the request to server socket (send to server)
-		//System.err.println("about to read");
+		// System.err.println("about to read");
 		InputStream stream = readSock.getInputStream();
 		//System.err.println("stream");
 		Scanner scan = new Scanner(stream, "US-ASCII");
