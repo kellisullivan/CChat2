@@ -4,7 +4,7 @@ AsianStudies:894.7.7.8:1729:jhsspnyhwof
 Chemistry:894.7.7.8:1720:tvsljbsl
 Classics:894.7.7.8:1721:ohklz
 ComparativeLit:894.7.7.8:1724:huhsfzpz
-CompSci:894.7.7.8:1755:qhch
+CompSci:849.83.817.59:1755:qhch
 Economics:894.7.7.8:1726:puclzatlua
 Education:894.7.7.8:1737:zjovvs
 English:894.7.7.8:1738:zohrlzwlhyl
@@ -16,7 +16,7 @@ Geology:894.7.7.8:1733:ihzhsa
 German:894.7.7.8:1734:tbupjo
 History:894.7.7.8:1735:kljshyhapvu
 Italian:894.7.7.8:1749:kbvtv
-Math:894.7.7.8:3777:klypchapcl
+Math:849.83.804.54:3777:klypchapcl
 Biology:894.7.7.8:1742:tpavjovukyph
 Music:894.7.7.8:1743:aylisl
 Neuro:894.7.7.8:1744:opwwvjhtwbz
